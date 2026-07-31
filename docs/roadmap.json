@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 2,
+    "revision": 3,
     "updated": "2026-07-31",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -62,7 +62,7 @@
           "tags": [
             "aufbau"
           ],
-          "notes": "Godot 4.7, Renderer GL Compatibility (fest, wegen Web-Export). Viewport 1920x1080, Stretch canvas_items / keep. Ordner scenes, scripts, assets. run.sh testen (bash run.sh). docs/.gdignore muss bleiben.",
+          "notes": "Godot 4.7, Renderer GL Compatibility (fest, wegen Web-Export). Viewport 1920x1080, Stretch canvas_items / keep. Ordner scenes, scripts, assets. run.sh testen (bash run.sh). docs/.gdignore muss bleiben.\n\ndanke  :-)",
           "date": "",
           "num": 1
         },
