@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 6,
+    "revision": 7,
     "updated": "2026-07-31",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -82,12 +82,12 @@
           "id": "dm-003",
           "title": "Platzhalter-Assets und zentrale Asset-Pfade",
           "phase": "tag1",
-          "status": "todo",
+          "status": "done",
           "tags": [
             "aufbau"
           ],
-          "notes": "Alle Pfade in eine einzige Datei (asset_config.gd). Platzhalter ab sofort als echte Sprites, haesslich aber richtig benannt und richtig gross. Julis Bilder ersetzen sie spaeter gleichnamig, ohne dass Szenen oder Code angefasst werden. Masse frueh an Juli durchgeben.",
-          "date": "",
+          "notes": "Alle Pfade in eine einzige Datei (asset_config.gd). Platzhalter ab sofort als echte Sprites, haesslich aber richtig benannt und richtig gross. Julis Bilder ersetzen sie spaeter gleichnamig, ohne dass Szenen oder Code angefasst werden. Masse frueh an Juli durchgeben.\n\n--- Umgesetzt 2026-07-31 (bitte testen) ---\nscripts/asset_config.gd (class_name AssetConfig): alle Pfade als const-Strings (BG_LEVEL1..3, BG_TITLE, SWITCH, LEVER, MOUSE, HOLE). Platzhalter in assets/ (haesslich, korrekt benannt+dimensioniert, transparente Sprites): bg_level1/2/3+bg_title 1920x1080, switch 128, lever 128 (Drehpunkt Mitte), mouse 700x800 (~150x171 im Spiel), hole 275x288. Level-Bgs mit 128er-Rasterlinien als Setzhilfe. Start/Ziel ins Bild gezeichnet (kein Asset), Rakete spaeter, Explosion per Skript. Massliste fuer Juli als Doku-Karte im Board. Verifiziert: Import ohne Fehler, Script parst, Assets ziehen Lossy+1920.",
+          "date": "2026-07-31",
           "num": 3
         },
         {
@@ -333,6 +333,13 @@
       ],
       "changelog": [
         {
+          "id": "cl-dm-03",
+          "title": "DM-003: asset_config.gd + Platzhalter-Assets",
+          "body": "Zentrale scripts/asset_config.gd (alle Pfade als Konstanten) und Platzhalter-Sprites in assets/ angelegt (128er-Raster: switch/lever 128, mouse 700x800->~150x171, hole 275x288, 4x bg 1920x1080). Juli ersetzt gleichnamig, ohne Code/Szenen zu beruehren. Massliste als Doku-Karte im Board. Start/Ziel ins Bild, Rakete spaeter, Explosion per Skript.",
+          "rev": 7,
+          "date": "2026-07-31"
+        },
+        {
           "id": "cl-dm-02",
           "title": "DM-002: Bild-Import-Defaults gesetzt",
           "body": "Projektweiter Texture-Default in project.godot: Size Limit 1920, Lossy, Mipmaps an -- jedes neue Bild erbt das automatisch. art_master/ fuer Julis 4K-Originale angelegt (.gdignore haelt Godot raus, Originale bleiben lokal). Folgeticket DM-023 (geplant): Assets auf Lossy-Qualitaetsverlust pruefen.",
@@ -347,7 +354,13 @@
           "date": "2026-07-31"
         }
       ],
-      "docs": [],
+      "docs": [
+        {
+          "id": "doc-asset-sizes",
+          "title": "Asset-Masze fuer Juli (Platzhalter gleichnamig ersetzen)",
+          "body": "Platzhalter liegen in assets/ (haesslich, korrekt benannt + dimensioniert). Bitte GLEICHNAMIG ersetzen, dann muss kein Code / keine Szene angefasst werden (DM-021).\n\n**Hintergruende** (male in 3840x2160, wird auf 1920 gerechnet):\n- bg_level1.png -- Sicherungskasten -- 1920x1080\n- bg_level2.png -- Platine -- 1920x1080\n- bg_level3.png -- Kontrollpult -- 1920x1080\n- bg_title.png -- Titelbild -- 1920x1080\n\n**Sprites** (transparenter Hintergrund):\n- switch.png -- Schalter -- 128x128\n- lever.png -- Hebel -- 128x128 (Drehpunkt Mitte)\n- mouse.png -- Maus -- 700x800 (im Spiel ~150x171, proportional ueber Breite)\n- hole.png -- Mauseloch -- 275x288\n\n**Raster:** 128er. Schalter + Hebel je 128x128, 128 Luecke dazwischen (Mitte-zu-Mitte 256). Start-/Zielknoten werden ins Hintergrundbild gezeichnet (kein eigenes Asset). Rakete: kein Asset (spaeter klaeren, erst Level 3). Explosion: per Skript, kein Asset."
+        }
+      ],
       "architecture": {
         "diagrams": []
       },
