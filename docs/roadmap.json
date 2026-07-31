@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 4,
+    "revision": 5,
     "updated": "2026-07-31",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -58,12 +58,12 @@
           "id": "dm-001",
           "title": "Godot-Projekt aufsetzen",
           "phase": "tag1",
-          "status": "todo",
+          "status": "done",
           "tags": [
             "aufbau"
           ],
-          "notes": "Godot 4.7, Renderer GL Compatibility (fest, wegen Web-Export). Viewport 1920x1080, Stretch canvas_items / keep. Ordner scenes, scripts, assets. run.sh testen (bash run.sh). docs/.gdignore muss bleiben.\n\ndanke  :-)",
-          "date": "",
+          "notes": "Godot 4.7, Renderer GL Compatibility (fest, wegen Web-Export). Viewport 1920x1080, Stretch canvas_items / keep. Ordner scenes, scripts, assets. run.sh testen (bash run.sh). docs/.gdignore muss bleiben.\n\ndanke  :-)\n\n--- Umgesetzt 2026-07-31 (bitte testen) ---\nproject.godot: Godot 4.7, GL Compatibility (fest), Viewport 1920x1080, Stretch canvas_items / keep. Ordner scenes/ scripts/ assets/ (mit .gitkeep). Minimale scenes/Main.tscn als main_scene, damit run.sh fehlerfrei startet. run.sh Kommentar von StarVoyage auf DangerMouse korrigiert. Getestet: bash run.sh (headless Import + Start) laeuft, Exit 0.",
+          "date": "2026-07-31",
           "num": 1
         },
         {
@@ -319,7 +319,15 @@
           "num": 22
         }
       ],
-      "changelog": [],
+      "changelog": [
+        {
+          "id": "cl-dm-01",
+          "title": "DM-001: Godot-Projekt aufgesetzt",
+          "body": "project.godot mit GL Compatibility (fest, wegen Web-Export), Viewport 1920x1080, Stretch canvas_items / keep, Feature-Tag 4.7. Ordner scenes/, scripts/, assets/. Minimale scenes/Main.tscn als main_scene. run.sh-Kommentar StarVoyage -> DangerMouse.",
+          "rev": 5,
+          "date": "2026-07-31"
+        }
+      ],
       "docs": [],
       "architecture": {
         "diagrams": []
