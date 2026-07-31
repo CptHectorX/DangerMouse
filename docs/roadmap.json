@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 5,
+    "revision": 6,
     "updated": "2026-07-31",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -70,12 +70,12 @@
           "id": "dm-002",
           "title": "Import-Voreinstellungen fuer Bilder",
           "phase": "tag1",
-          "status": "todo",
+          "status": "done",
           "tags": [
             "aufbau"
           ],
-          "notes": "Juli malt in 3840x2160, ausgeliefert wird 1920. Pro Hintergrund in den Import-Einstellungen: Process > Size Limit 1920, Compress > Lossy, Mipmaps an. Godot exportiert nur die interne Fassung, das Original bleibt aussen vor. Zusaetzlich Ordner art_master/ mit eigener .gdignore fuer Julis Originaldateien.",
-          "date": "",
+          "notes": "Juli malt in 3840x2160, ausgeliefert wird 1920. Pro Hintergrund in den Import-Einstellungen: Process > Size Limit 1920, Compress > Lossy, Mipmaps an. Godot exportiert nur die interne Fassung, das Original bleibt aussen vor. Zusaetzlich Ordner art_master/ mit eigener .gdignore fuer Julis Originaldateien.\n\n--- Umgesetzt 2026-07-31 (bitte testen) ---\nproject.godot [importer_defaults] texture: Size Limit 1920, Compress Lossy (mode 1), Mipmaps an. Gilt projektweit fuer jedes neue Bild (Preis: auch UI/Sprites; einzelne spaeter per Bild auf Lossless zurueckstellen -> siehe geplantes Ticket DM-023). art_master/ angelegt mit eigener .gdignore (nur .gdignore + README im Git, Originale bleiben lokal/gitignored). Verifiziert per Testbild: Import zieht mode=1, mipmaps=true, size_limit=1920.",
+          "date": "2026-07-31",
           "num": 2
         },
         {
@@ -317,9 +317,28 @@
           "notes": "Bewusst ans Ende gelegt. Zu pruefen: bleibt das Spiel spaet noch schaffbar, wenn viele Maeuse gleichzeitig Hebel umwerfen? Falls nicht, sind die billigen Hebel: eine Maus wirft hoechstens einen Hebel, und ein frisch getroffener Abschnitt bleibt ein paar Sekunden maeusefrei.",
           "date": "",
           "num": 22
+        },
+        {
+          "id": "dm-023",
+          "title": "Assets auf Qualitaetsverlust durch Lossy pruefen",
+          "phase": "tag3",
+          "status": "planned",
+          "tags": [
+            "assets"
+          ],
+          "notes": "Alle importierten Bilder durchsehen, ob die projektweite Lossy-Kompression (DM-002) irgendwo sichtbar stoert -- verwaschene Kanten/Artefakte, vor allem bei UI, Text oder Pixel-Art. Betroffene Bilder per Bild-Import auf Compress > Lossless zuruecksetzen. Sinnvoll erst, wenn genug Assets drin sind.",
+          "date": "",
+          "num": 23
         }
       ],
       "changelog": [
+        {
+          "id": "cl-dm-02",
+          "title": "DM-002: Bild-Import-Defaults gesetzt",
+          "body": "Projektweiter Texture-Default in project.godot: Size Limit 1920, Lossy, Mipmaps an -- jedes neue Bild erbt das automatisch. art_master/ fuer Julis 4K-Originale angelegt (.gdignore haelt Godot raus, Originale bleiben lokal). Folgeticket DM-023 (geplant): Assets auf Lossy-Qualitaetsverlust pruefen.",
+          "rev": 6,
+          "date": "2026-07-31"
+        },
         {
           "id": "cl-dm-01",
           "title": "DM-001: Godot-Projekt aufgesetzt",
@@ -355,7 +374,7 @@
         "folders": []
       },
       "key": "DM",
-      "nextNum": 23
+      "nextNum": 24
     }
   ]
 }
