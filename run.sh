@@ -1,5 +1,5 @@
 #!/bin/sh
-# Startet StarVoyage (SpaceAct-Prototyp) ohne Editor.
+# Startet DangerMouse ohne Editor.
 #
 #   ./run.sh              normal starten
 #   ./run.sh --editor     im Editor oeffnen
