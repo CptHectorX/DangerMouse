@@ -1,0 +1,335 @@
+{
+  "meta": {
+    "project": "DangerMouse",
+    "subtitle": "Game Jam Augsburg",
+    "repo": "github.com/CptHectorX/DangerMouse",
+    "revision": 2,
+    "updated": "2026-07-31",
+    "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
+  },
+  "acts": [
+    {
+      "id": "dangermouse",
+      "name": "DangerMouse",
+      "tagline": "Game Jam Augsburg — Alex & Juli",
+      "theme": "adventure",
+      "reference": "",
+      "phases": [
+        {
+          "id": "tag1",
+          "name": "Tag 1",
+          "order": 1
+        },
+        {
+          "id": "tag2",
+          "name": "Tag 2",
+          "order": 2
+        },
+        {
+          "id": "tag3",
+          "name": "Tag 3",
+          "order": 3
+        }
+      ],
+      "columns": [
+        {
+          "id": "done",
+          "name": "Fertig",
+          "order": 1
+        },
+        {
+          "id": "doing",
+          "name": "Laeuft",
+          "order": 2
+        },
+        {
+          "id": "todo",
+          "name": "Offen",
+          "order": 3
+        },
+        {
+          "id": "planned",
+          "name": "Geplant",
+          "order": 4
+        }
+      ],
+      "cards": [
+        {
+          "id": "dm-001",
+          "title": "Godot-Projekt aufsetzen",
+          "phase": "tag1",
+          "status": "todo",
+          "tags": [
+            "aufbau"
+          ],
+          "notes": "Godot 4.7, Renderer GL Compatibility (fest, wegen Web-Export). Viewport 1920x1080, Stretch canvas_items / keep. Ordner scenes, scripts, assets. run.sh testen (bash run.sh). docs/.gdignore muss bleiben.",
+          "date": "",
+          "num": 1
+        },
+        {
+          "id": "dm-002",
+          "title": "Import-Voreinstellungen fuer Bilder",
+          "phase": "tag1",
+          "status": "todo",
+          "tags": [
+            "aufbau"
+          ],
+          "notes": "Juli malt in 3840x2160, ausgeliefert wird 1920. Pro Hintergrund in den Import-Einstellungen: Process > Size Limit 1920, Compress > Lossy, Mipmaps an. Godot exportiert nur die interne Fassung, das Original bleibt aussen vor. Zusaetzlich Ordner art_master/ mit eigener .gdignore fuer Julis Originaldateien.",
+          "date": "",
+          "num": 2
+        },
+        {
+          "id": "dm-003",
+          "title": "Platzhalter-Assets und zentrale Asset-Pfade",
+          "phase": "tag1",
+          "status": "todo",
+          "tags": [
+            "aufbau"
+          ],
+          "notes": "Alle Pfade in eine einzige Datei (asset_config.gd). Platzhalter ab sofort als echte Sprites, haesslich aber richtig benannt und richtig gross. Julis Bilder ersetzen sie spaeter gleichnamig, ohne dass Szenen oder Code angefasst werden. Masse frueh an Juli durchgeben.",
+          "date": "",
+          "num": 3
+        },
+        {
+          "id": "dm-004",
+          "title": "Datenmodell: Knoten und Hebel",
+          "phase": "tag1",
+          "status": "todo",
+          "tags": [
+            "kern"
+          ],
+          "notes": "Kein Raster. Knoten sind von Hand gesetzte Marker im Bild. Ein Hebel hat einen Drehpunkt und je Richtung (W/A/S/D) hoechstens einen Zielknoten; Richtungen ohne Zielknoten sind erlaubt und bedeuten Leerstellung. Hebellaenge ergibt sich aus Julis Zeichnung.",
+          "date": "",
+          "num": 4
+        },
+        {
+          "id": "dm-005",
+          "title": "Stromfluss von Start zu Ziel",
+          "phase": "tag1",
+          "status": "todo",
+          "tags": [
+            "kern"
+          ],
+          "notes": "Der Strom beginnt am festen Startknoten und haengelt sich ueber anliegende Hebel weiter. Jeden Frame neu von Start aus rechnen - dann braucht es kein eigenes Zuruecksetzen: faellt ein Hebel in Leerstellung, endet der Fluss eben dort. Ziel erreicht = Level geschafft.",
+          "date": "",
+          "num": 5
+        },
+        {
+          "id": "dm-006",
+          "title": "Steuerung: Hover waehlt, Tastatur handelt",
+          "phase": "tag1",
+          "status": "todo",
+          "tags": [
+            "kern"
+          ],
+          "notes": "Maus-Hover markiert einen Hebel, WASD oder Pfeiltasten legen ihn in die jeweilige Richtung um. Kein Klick. Der Hebel wird als einzelnes Sprite um seinen Drehpunkt rotiert, Umlegen kurz getweent.",
+          "date": "",
+          "num": 6
+        },
+        {
+          "id": "dm-007",
+          "title": "Level 1: Sicherungskasten",
+          "phase": "tag1",
+          "status": "todo",
+          "tags": [
+            "level"
+          ],
+          "notes": "Knoten, Hebel, Startpunkt und Zielpunkt von Hand im Bild platzieren. Erstes vollstaendiges Level - noch ohne Maeuse.",
+          "date": "",
+          "num": 7
+        },
+        {
+          "id": "dm-008",
+          "title": "Timer 5:00.000",
+          "phase": "tag1",
+          "status": "todo",
+          "tags": [
+            "kern"
+          ],
+          "notes": "Laeuft durchgehend rueckwaerts ueber alle drei Level, Anzeige Minuten:Sekunden.Millisekunden. Kein Anhalten zwischen den Leveln.",
+          "date": "",
+          "num": 8
+        },
+        {
+          "id": "dm-009",
+          "title": "Sieg und Niederlage",
+          "phase": "tag1",
+          "status": "todo",
+          "tags": [
+            "kern"
+          ],
+          "notes": "Alle drei Level in der Zeit verkabelt: Rakete startet, gewonnen. Timer bei null: Rakete explodiert, verloren. Erst als schlichter Bildschirm, Animationen kommen spaeter.",
+          "date": "",
+          "num": 9
+        },
+        {
+          "id": "dm-010",
+          "title": "Web-Export und erster Upload auf itch.io",
+          "phase": "tag1",
+          "status": "todo",
+          "tags": [
+            "abgabe"
+          ],
+          "notes": "Pflicht am Ende von Tag 1, nicht spaeter. Beim Upload die SharedArrayBuffer-Option setzen, sonst haengt das Spiel im Ladebalken. Gegenprobe: strings *.pck | grep -c res://docs muss 0 liefern. Build-Ordner nicht committen.",
+          "date": "",
+          "num": 10
+        },
+        {
+          "id": "dm-011",
+          "title": "Spawnpunkte und Maeusepfade",
+          "phase": "tag2",
+          "status": "todo",
+          "tags": [
+            "maeuse"
+          ],
+          "notes": "Beides von Hand als Marker gesetzt, nichts wird generiert. Mehrere Spawnpunkte, mehrere moegliche Pfade je Spawnpunkt.",
+          "date": "",
+          "num": 11
+        },
+        {
+          "id": "dm-012",
+          "title": "Maeuse bewegen sich",
+          "phase": "tag2",
+          "status": "todo",
+          "tags": [
+            "maeuse"
+          ],
+          "notes": "Beim Auftauchen werden Spawnpunkt und Pfad zufaellig gewaehlt - das ist die einzige Stelle, an der gewuerfelt wird. Das Tempo selbst bleibt vorhersehbar.",
+          "date": "",
+          "num": 12
+        },
+        {
+          "id": "dm-013",
+          "title": "Maus trifft Strom",
+          "phase": "tag2",
+          "status": "todo",
+          "tags": [
+            "maeuse"
+          ],
+          "notes": "Beruehrt eine Maus einen stromfuehrenden Abschnitt, wird sie elektrifiziert und explodiert. Der dortige Hebel faellt in Leerstellung - der Strom kommt dadurch nur noch bis zu diesem Knoten. Mehr passiert nicht: Maeuse blockieren das Schalten nicht.",
+          "date": "",
+          "num": 13
+        },
+        {
+          "id": "dm-014",
+          "title": "Spawn-Kurve: es wird wilder",
+          "phase": "tag2",
+          "status": "todo",
+          "tags": [
+            "maeuse"
+          ],
+          "notes": "Eine einzige Kurve, verstrichene Zeit rein, Spawn-Intervall raus. Alle Werte als @export in einer Resource, damit sie im laufenden Spiel gedreht werden koennen. Nicht auswuerfeln.",
+          "date": "",
+          "num": 14
+        },
+        {
+          "id": "dm-015",
+          "title": "Levelwechsel mit Countdown",
+          "phase": "tag2",
+          "status": "todo",
+          "tags": [
+            "politur"
+          ],
+          "notes": "Schwarzer Bildschirm, Text \"Mach dich bereit, es gibt noch mehr Maeuse!!\", dann 3 - 2 - 1 - GO. Der Timer laeuft dabei weiter.",
+          "date": "",
+          "num": 15
+        },
+        {
+          "id": "dm-016",
+          "title": "Level 2: Platine",
+          "phase": "tag2",
+          "status": "todo",
+          "tags": [
+            "level"
+          ],
+          "notes": "Gleiches System, neues Bild und neue Knoten. Wenn hier Code noetig wird, stimmt am Aufbau etwas nicht.",
+          "date": "",
+          "num": 16
+        },
+        {
+          "id": "dm-017",
+          "title": "Level 3: Kontrollpult",
+          "phase": "tag3",
+          "status": "todo",
+          "tags": [
+            "level"
+          ],
+          "notes": "Das schwerste Level. Gleiches System.",
+          "date": "",
+          "num": 17
+        },
+        {
+          "id": "dm-018",
+          "title": "Titelbild, Menue und Levelauswahl",
+          "phase": "tag3",
+          "status": "todo",
+          "tags": [
+            "politur"
+          ],
+          "notes": "Levelauswahl ist die Rueckversicherung fuer die Jury: fuenf Minuten am Stueck spielt beim Bewerten kaum jemand, aber Level 3 soll trotzdem jemand sehen koennen.",
+          "date": "",
+          "num": 18
+        },
+        {
+          "id": "dm-019",
+          "title": "Raketenstart und Explosion",
+          "phase": "tag3",
+          "status": "todo",
+          "tags": [
+            "politur"
+          ],
+          "notes": "Kleine Animation fuer den Sieg, kurze Explosion fuer die Niederlage.",
+          "date": "",
+          "num": 19
+        },
+        {
+          "id": "dm-020",
+          "title": "Ton und Musik",
+          "phase": "tag3",
+          "status": "todo",
+          "tags": [
+            "politur"
+          ],
+          "notes": "Macht Alex. Quieken der Maeuse, Knacken beim Umlegen, Summen des Stroms, Musik. Achtung Web: Ton startet in Browsern erst nach der ersten Eingabe des Spielers.",
+          "date": "",
+          "num": 20
+        },
+        {
+          "id": "dm-021",
+          "title": "Julis Assets einbauen",
+          "phase": "tag3",
+          "status": "todo",
+          "tags": [
+            "politur"
+          ],
+          "notes": "Platzhalter gleichnamig ueberschreiben. Wenn dabei Code angefasst werden muss, war die Vorarbeit aus Karte DM-003 nicht gruendlich genug.",
+          "date": "",
+          "num": 21
+        },
+        {
+          "id": "dm-022",
+          "title": "Balancing-Durchlauf",
+          "phase": "tag3",
+          "status": "todo",
+          "tags": [
+            "politur"
+          ],
+          "notes": "Bewusst ans Ende gelegt. Zu pruefen: bleibt das Spiel spaet noch schaffbar, wenn viele Maeuse gleichzeitig Hebel umwerfen? Falls nicht, sind die billigen Hebel: eine Maus wirft hoechstens einen Hebel, und ein frisch getroffener Abschnitt bleibt ein paar Sekunden maeusefrei.",
+          "date": "",
+          "num": 22
+        }
+      ],
+      "changelog": [],
+      "docs": [],
+      "architecture": {
+        "diagrams": []
+      },
+      "moodboard": {
+        "boards": [],
+        "folders": []
+      },
+      "key": "DM",
+      "nextNum": 23
+    }
+  ]
+}

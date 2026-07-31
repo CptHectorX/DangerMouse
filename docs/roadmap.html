@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DangerMouse — Game Jam</title>
+<link rel="stylesheet" href="roadmap.css">
+</head>
+<body data-theme="adventure">
+
+<div class="shell">
+  <nav class="sidebar">
+    <div class="side-brand"><span class="glyph">◇</span> DANGERMOUSE <span class="juli-bear" id="juliBear" role="button" tabindex="0" title="?">🐻‍❄️</span></div>
+    <button class="nav-item active" data-view="board"><span class="ico">▤</span> Board</button>
+    <button class="nav-item" data-view="changelog"><span class="ico">🕑</span> Changelog</button>
+    <button class="nav-item" data-view="docs"><span class="ico">📖</span> Dokumentation</button>
+    <button class="nav-item" data-view="architecture"><span class="ico">◈</span> Architektur</button>
+    <div class="arch-subnav" id="archSubnav"></div>
+    <button class="nav-item" data-view="moodboard"><span class="ico">🖼</span> Moodboard<span class="mb-newfolder" id="mbNewFolder" role="button" tabindex="0" title="Ordner anlegen">📁<b>+</b></span></button>
+    <div class="arch-subnav" id="mbSubnav"></div>
+    <div class="side-spacer"></div>
+    <div class="side-foot" id="sideFoot"></div>
+  </nav>
+
+  <div class="main">
+    <div class="acts" id="acts"></div>
+
+    <header>
+      <div class="brand">
+        <h1><span class="glyph">◇</span> <span id="brandName">STARVOYAGE</span></h1>
+        <span class="sub" id="brandSub">Mission Log</span>
+      </div>
+      <div class="meta-strip" id="metaStrip"></div>
+    </header>
+
+    <div class="toolbar">
+      <button class="tool primary" id="btnOpen">Datei öffnen</button>
+      <button class="tool" id="btnSave">Speichern</button>
+      <button class="tool" id="btnAdd" data-addlabel="+ Karte">+ Karte</button>
+      <button class="tool" id="btnExport">Export JSON</button>
+      <button class="tool" id="btnDiscard" title="Ungespeicherte Änderungen verwerfen und den gespeicherten Stand laden">Verwerfen</button>
+      <div class="spacer"></div>
+      <div class="status-msg" id="statusMsg" role="button" tabindex="0" title="Klick: Meldungs-Historie"></div>
+    </div>
+
+    <!-- VIEW: Board -->
+    <section class="view active" id="view-board">
+      <div class="legend" id="legend"></div>
+      <div class="timeline-wrap">
+        <p class="section-label">Flugbahn</p>
+        <div class="timeline" id="timeline"></div>
+      </div>
+      <div class="board-wrap">
+        <p class="section-label">Board</p>
+        <div class="board" id="board"></div>
+      </div>
+    </section>
+
+    <!-- VIEW: Changelog -->
+    <section class="view" id="view-changelog">
+      <div class="doclist-wrap">
+        <p class="section-label">Changelog</p>
+        <div class="doclist" id="changelogList"></div>
+      </div>
+    </section>
+
+    <!-- VIEW: Documentation -->
+    <section class="view" id="view-docs">
+      <div class="doclist-wrap">
+        <p class="section-label">Dokumentation</p>
+        <div class="doclist" id="docsList"></div>
+      </div>
+    </section>
+
+    <!-- VIEW: Architecture -->
+    <section class="view" id="view-architecture">
+      <div class="arch-wrap">
+        <p class="section-label">Architektur</p>
+        <div class="arch-canvas" id="archCanvas">
+          <input class="arch-name" id="archName" placeholder="Diagrammname…" />
+          <div class="arch-world" id="archWorld">
+            <svg class="arch-edges" id="archEdges"></svg>
+          </div>
+          <div class="arch-zoom" id="archZoom">
+            <button class="tool" data-z="out" title="Rauszoomen">－</button>
+            <button class="tool" data-z="reset" title="1:1 zurücksetzen">⤢</button>
+            <button class="tool" data-z="in" title="Reinzoomen">＋</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: Moodboard -->
+    <section class="view" id="view-moodboard">
+      <div class="mb-wrap">
+        <div class="mb-palette" id="mbPalette">
+          <button data-add="rect">▭ Rechteck</button>
+          <button data-add="square">◻ Quadrat</button>
+          <button data-add="text">T Text</button>
+          <button data-add="note">🗒 Notiz</button>
+          <label class="mb-snap-lbl"><input type="checkbox" id="mbSnapChk" checked> Einrasten</label>
+          <input type="color" id="mbGuideCol" class="mb-guide-col" title="Farbe der Hilfslinien" value="#ff4d8d" />
+          <span class="mb-hint">Text: Doppelklick · Verbinden: vom Randkreis ziehen · Bild: Strg+V · Alt hält Einrasten an</span>
+        </div>
+        <div class="mb-canvas" id="mbCanvas">
+          <input class="arch-name" id="mbName" placeholder="Board-Name…" />
+          <div class="mb-world" id="mbWorld">
+            <svg class="mb-edges" id="mbEdges"></svg>
+            <svg class="mb-guides" id="mbGuides"></svg>
+          </div>
+          <div class="arch-zoom" id="mbZoom">
+            <button class="tool" data-z="out" title="Rauszoomen">－</button>
+            <button class="tool" data-z="reset" title="1:1 zurücksetzen">⤢</button>
+            <button class="tool" data-z="in" title="Reinzoomen">＋</button>
+          </div>
+          <div class="mb-panel" id="mbPanel" style="display:none"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<aside class="status-panel" id="statusPanel">
+  <div class="status-panel-grip" id="statusPanelGrip" title="Breite ziehen"></div>
+  <div class="status-panel-head">Meldungen dieser Session</div>
+  <div class="status-panel-list" id="statusPanelList"></div>
+</aside>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Karte bearbeiten</h3>
+      <button class="tool" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Titel</label><input type="text" id="fTitle" /></div>
+      <div class="field field-notes">
+        <div class="field-head">
+          <label>Notizen</label>
+          <div class="md-modes">
+            <button type="button" class="md-mode active" data-mode="edit">Bearbeiten</button>
+            <button type="button" class="md-mode" data-mode="preview">Vorschau</button>
+          </div>
+        </div>
+        <div class="md-bar" id="mdBar">
+          <button type="button" data-md="prefix" data-p="## " title="Überschrift">H2</button>
+          <button type="button" data-md="prefix" data-p="### " title="Kleinere Überschrift">H3</button>
+          <span class="md-sep"></span>
+          <button type="button" data-md="wrap" data-a="**" data-b="**" data-ph="fett" title="Fett"><b>F</b></button>
+          <button type="button" data-md="wrap" data-a="*" data-b="*" data-ph="kursiv" title="Kursiv"><i>K</i></button>
+          <button type="button" data-md="wrap" data-a="`" data-b="`" data-ph="Code" title="Code">&lt;/&gt;</button>
+          <span class="md-sep"></span>
+          <button type="button" data-md="prefix" data-p="- " title="Aufzählung">• Liste</button>
+          <button type="button" data-md="prefix" data-p="1. " title="Nummerierung">1. Liste</button>
+          <button type="button" data-md="prefix" data-p="&gt; " title="Zitat">❝ Zitat</button>
+          <span class="md-sep"></span>
+          <button type="button" data-md="line" data-t="---" title="Trennlinie">―</button>
+          <button type="button" data-md="link" title="Link einfügen">🔗</button>
+          <button type="button" data-md="cardlink" title="Verweis auf eine andere Karte">[ ]</button>
+        </div>
+        <textarea id="fNotes"></textarea>
+        <div class="md-preview" id="fNotesPreview" hidden></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Status</label><select id="fStatus"></select></div>
+        <div class="field"><label>Phase</label><select id="fPhase"></select></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Tags (Komma)</label><input type="text" id="fTags" /></div>
+        <div class="field"><label>Datum</label><input type="text" id="fDate" placeholder="2026-07-06" /></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="danger" id="btnDelete">Löschen</button>
+      <div class="spacer"></div>
+      <button class="tool" id="btnCancel">Abbrechen</button>
+      <button class="tool primary" id="btnSaveCard">Übernehmen</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="docModalBackdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="docModalTitle">Eintrag bearbeiten</h3>
+      <button class="tool" id="docModalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Titel</label><input type="text" id="dTitle" /></div>
+      <div class="field-row" id="dRevRow">
+        <div class="field"><label>Revision</label><input type="text" id="dRev" placeholder="14" /></div>
+        <div class="field"><label>Datum</label><input type="text" id="dDate" placeholder="2026-07-06" /></div>
+      </div>
+      <div class="field"><label>Text</label><textarea id="dBody" style="min-height:160px"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="danger" id="dBtnDelete">Löschen</button>
+      <div class="spacer"></div>
+      <button class="tool" id="dBtnCancel">Abbrechen</button>
+      <button class="tool primary" id="dBtnSave">Übernehmen</button>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" id="archModalBackdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="archModalTitle">Knoten</h3>
+      <button class="tool" id="archModalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Bezeichnung</label><input type="text" id="aLabel" placeholder="z. B. ShipStats" /></div>
+      <div class="field"><label>Typ</label><select id="aKind">
+        <option value="box">Box</option>
+        <option value="ellipse">Ellipse</option>
+        <option value="diamond">Raute</option>
+      </select></div>
+    </div>
+    <div class="modal-foot">
+      <button class="danger" id="aBtnDelete">Löschen</button>
+      <div class="spacer"></div>
+      <button class="tool" id="aBtnCancel">Abbrechen</button>
+      <button class="tool primary" id="aBtnSave">Übernehmen</button>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" id="edgeModalBackdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Verbindung</h3>
+      <button class="tool" id="edgeModalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Beziehung (optional)</label><input type="text" id="eLabel" placeholder="z. B. nutzt, enthält, wird zu" /></div>
+    </div>
+    <div class="modal-foot">
+      <button class="danger" id="eBtnDelete">Löschen</button>
+      <div class="spacer"></div>
+      <button class="tool" id="eBtnCancel">Abbrechen</button>
+      <button class="tool primary" id="eBtnSave">Übernehmen</button>
+    </div>
+  </div>
+</div>
+<script src="roadmap.js"></script>
+</body>
+</html>

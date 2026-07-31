@@ -1,0 +1,13 @@
+# Cloudflare Pages Header-Regeln — App-Dateien nie stur aus dem Browser-Cache.
+# "no-cache" heisst NICHT "nie cachen", sondern: vor jeder Verwendung beim Server
+# rueckfragen, ob es was Neueres gibt (ETag). Unveraendert -> 304, weiterhin schnell.
+# Nach jedem Deploy laeuft damit sofort die neue Version — Strg+Shift+R ist Geschichte.
+
+/roadmap.html
+  Cache-Control: no-cache
+
+/roadmap.js
+  Cache-Control: no-cache
+
+/roadmap.css
+  Cache-Control: no-cache
