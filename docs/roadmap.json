@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 3,
+    "revision": 4,
     "updated": "2026-07-31",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -325,7 +325,25 @@
         "diagrams": []
       },
       "moodboard": {
-        "boards": [],
+        "boards": [
+          {
+            "id": "b-ms9dtzbv",
+            "name": "Board 1",
+            "elements": [
+              {
+                "id": "el-ms9dtzbv",
+                "type": "image",
+                "x": 108,
+                "y": 71,
+                "w": 687,
+                "h": 614,
+                "group": null,
+                "src": "images/mb-ms9dtxfl.png"
+              }
+            ],
+            "connections": []
+          }
+        ],
         "folders": []
       },
       "key": "DM",
