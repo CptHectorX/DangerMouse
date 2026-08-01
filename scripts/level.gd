@@ -12,7 +12,9 @@ const GOAL_PX := Vector2(1500, 812)
 const TRAY := ["switch", "lever", "straight", "curve", "plug"]
 const TRAY_NAME := {"switch": "Schalter", "lever": "Hebel", "straight": "Kabel |", "curve": "Kabel L", "plug": "Stecker"}
 const LightningScript := preload("res://scripts/lightning.gd")
+const MouseScript := preload("res://scripts/mouse.gd")
 
+var mouse: Node
 var board: Board
 var inventory := {"switch": 14, "lever": 12, "straight": 22, "curve": 10, "plug": 6}
 var active := "switch"
@@ -21,6 +23,8 @@ func _ready() -> void:
 	board = Board.new()
 	board.entry = ENTRY
 	board.exit = EXIT
+	mouse = MouseScript.new()
+	add_child(mouse)
 	_rebuild()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -95,7 +99,8 @@ func _center(cell: Vector2i) -> Vector2:
 
 func _rebuild() -> void:
 	for child in get_children():
-		child.free()
+		if child != mouse:
+			child.free()
 	_add_background()
 	var powered := board.powered_cells()
 	_add_field_markers()
