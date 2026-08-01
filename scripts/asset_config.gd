@@ -10,4 +10,8 @@ const LEVER := "res://assets/lever.png"
 const MOUSE := "res://assets/mouse.png"
 const HOLE := "res://assets/hole.png"
 
+const CABLE_PLUG := "res://assets/cable_plug.png"
+const CABLE_STRAIGHT := "res://assets/cable_straight.png"
+const CABLE_CURVE := "res://assets/cable_curve.png"
+
 const LEVELS := [BG_LEVEL1, BG_LEVEL2, BG_LEVEL3]
