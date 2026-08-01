@@ -137,7 +137,7 @@ func _center(cell: Vector2i) -> Vector2:
 
 func _rebuild() -> void:
 	for child in get_children():
-		if child.is_in_group("mouse") or child.is_in_group("fx"):
+		if child.is_in_group("mouse") or child.is_in_group("fx") or child.is_in_group("keep"):
 			continue
 		child.free()
 	_add_background()
