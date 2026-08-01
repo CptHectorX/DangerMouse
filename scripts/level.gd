@@ -92,13 +92,31 @@ func _on_mouse_landed(cell: Vector2i, m: Node) -> void:
 		_explode_at(cell, m)
 
 func _explode_at(cell: Vector2i, m: Node) -> void:
-	_reset_all()
+	_remove_one(cell)
 	_rebuild()
 	var boom = ExplosionScript.new()
 	boom.position = _center(cell)
 	add_child(boom)
 	var hole = _holes[randi() % _holes.size()]
 	m.spawn_in_hole(hole[0], hole[1])
+
+func _remove_one(cell: Vector2i) -> void:
+	if board.cables.has(cell):
+		match board.cables[cell]["type"]:
+			Board.Cable.STRAIGHT: inventory["straight"] += 1
+			Board.Cable.CURVE: inventory["curve"] += 1
+			Board.Cable.PLUG: inventory["plug"] += 1
+		board.cables.erase(cell)
+	elif board.switches.has(cell):
+		if board.fixed.has(cell):
+			if board.switches[cell] != Board.NO_LEVER:
+				inventory["lever"] += 1
+				board.switches[cell] = Board.NO_LEVER
+		else:
+			if board.switches[cell] != Board.NO_LEVER:
+				inventory["lever"] += 1
+			inventory["switch"] += 1
+			board.switches.erase(cell)
 
 func _reset_all() -> void:
 	for c in board.cables.keys():
