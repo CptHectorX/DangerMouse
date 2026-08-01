@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 21,
+    "revision": 22,
     "updated": "2026-08-01",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -332,6 +332,13 @@
         }
       ],
       "changelog": [
+        {
+          "id": "cl-dm-18",
+          "title": "DM-008: Timer 5:00 (7-Segment)",
+          "body": "Countdown 5:00 rueckwaerts als 7-Segment-Anzeige (abgekantete breite Striche, Radiowecker-Look) auf grauer Flaeche. Gruen, ab 2:50 orange, ab 1:00 rot. Eigene Szene GameTimer.tscn, in Godot frei positionierbar (Gruppe keep, ueberlebt Rebuilds). Anzeige M:SS (ohne ms).",
+          "rev": 22,
+          "date": "2026-08-01"
+        },
         {
           "id": "cl-dm-17",
           "title": "Balancing: 1 Maus, laenger im Loch",
