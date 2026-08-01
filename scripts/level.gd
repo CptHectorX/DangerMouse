@@ -1,7 +1,7 @@
 extends Node2D
 
-const CELL := 128
-const ORIGIN := Vector2(360, 260)
+const SLOT := 64
+const PLAY_ORIGIN := Vector2(340, 220)
 
 func _ready() -> void:
 	_add_background()
@@ -18,7 +18,6 @@ func _add_background() -> void:
 	var grid := Sprite2D.new()
 	grid.texture = load(AssetConfig.BG_LEVEL1_GRID)
 	grid.position = Vector2(960, 540)
-	grid.modulate = Color(1, 1, 1, 0.55)
 	add_child(grid)
 
 func _demo_board() -> Board:
@@ -33,7 +32,7 @@ func _demo_board() -> Board:
 	return b
 
 func _cell_center(cell: Vector2i) -> Vector2:
-	return ORIGIN + Vector2(cell.x * CELL + CELL / 2.0, cell.y * CELL + CELL / 2.0)
+	return PLAY_ORIGIN + Vector2(cell.x * SLOT + SLOT / 2.0, cell.y * SLOT + SLOT / 2.0)
 
 func _tint(item: CanvasItem, live: bool) -> void:
 	item.modulate = Color(1, 1, 1) if live else Color(0.4, 0.4, 0.45)
@@ -43,6 +42,7 @@ func _sprite(path: String, cell: Vector2i, live: bool, rot_deg := 0.0) -> void:
 	s.texture = load(path)
 	s.position = _cell_center(cell)
 	s.rotation_degrees = rot_deg
+	s.scale = Vector2(SLOT / 128.0, SLOT / 128.0)
 	_tint(s, live)
 	add_child(s)
 
@@ -66,19 +66,20 @@ func _render(board: Board, powered: Dictionary) -> void:
 
 func _marker(cell: Vector2i, text: String, col: Color) -> void:
 	var rect := ColorRect.new()
-	rect.size = Vector2(CELL, CELL)
-	rect.position = _cell_center(cell) - Vector2(CELL, CELL) / 2.0
+	rect.size = Vector2(SLOT, SLOT)
+	rect.position = _cell_center(cell) - Vector2(SLOT, SLOT) / 2.0
 	rect.color = Color(col, 0.55)
 	add_child(rect)
 	var label := Label.new()
 	label.text = text
-	label.position = rect.position + Vector2(10, 46)
+	label.position = rect.position + Vector2(2, SLOT / 2.0 - 8)
+	label.add_theme_font_size_override("font_size", 12)
 	add_child(label)
 
 func _add_status(won: bool) -> void:
 	var label := Label.new()
-	label.text = "Ziel mit Strom: " + ("JA" if won else "NEIN")
-	label.position = Vector2(440, 220)
-	label.add_theme_font_size_override("font_size", 44)
-	label.modulate = Color(1.0, 0.85, 0.2) if won else Color(0.9, 0.4, 0.4)
+	label.text = "Level 1 (Vorschau) · Slot 64px · Ziel mit Strom: " + ("JA" if won else "NEIN")
+	label.position = Vector2(340, 176)
+	label.add_theme_font_size_override("font_size", 30)
+	label.modulate = Color(1.0, 0.9, 0.3)
 	add_child(label)
