@@ -196,6 +196,8 @@ func _can_build_at(cell: Vector2i) -> bool:
 	if cell == ENTRY:
 		return true
 	var powered := board.powered_cells()
+	if powered.has(cell):
+		return true
 	for d in [Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0)]:
 		var nb: Vector2i = cell + d
 		if powered.has(nb):
