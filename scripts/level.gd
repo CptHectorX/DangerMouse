@@ -58,6 +58,9 @@ func _load_layout(layout) -> void:
 	board.links.clear()
 	for s in layout["switches"]:
 		var c := Vector2i(s[0], s[1])
+		if not _placeable(c):
+			push_warning("Layout-Schalter im Riss/ausserhalb ignoriert: %s" % c)
+			continue
 		board.place_switch(c)
 		board.fixed[c] = true
 	for lk in layout["links"]:
