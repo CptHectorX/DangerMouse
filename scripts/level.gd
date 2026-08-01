@@ -28,11 +28,11 @@ func _ready() -> void:
 	board.exit = EXIT
 	_holes = [
 		[Vector2(415, 150), Vector2i(0, 0)],
-		[Vector2(1610, 295), Vector2i(14, 1)],
+		[Vector2(1640, 288), Vector2i(14, 1)],
 		[Vector2(283, 800), Vector2i(0, 8)],
 	]
-	for h in _holes:
-		_spawn_mouse(h[0], h[1])
+	var h = _holes[randi() % _holes.size()]
+	_spawn_mouse(h[0], h[1])
 	_rebuild()
 
 func _spawn_mouse(hole_pos: Vector2, emerge_cell: Vector2i) -> void:

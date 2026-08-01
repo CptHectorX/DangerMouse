@@ -9,6 +9,8 @@ const ROWS := 9
 const SIZE_PX := 96.0
 const HOP_DUR := 0.26
 const HOP_HEIGHT := 18.0
+const HOLE_WAIT_MIN := 8.0
+const HOLE_WAIT_MAX := 16.0
 
 enum State { HOLE, EMERGE, WANDER }
 
@@ -38,7 +40,7 @@ func spawn_in_hole(hole_pos: Vector2, emerge_cell: Vector2i) -> void:
 	position = hole_pos
 	_hopping = false
 	_wiggle = 0.0
-	_wait = randf_range(1.0, 4.5)
+	_wait = randf_range(HOLE_WAIT_MIN, HOLE_WAIT_MAX)
 
 func _process(delta: float) -> void:
 	if state == State.HOLE:
