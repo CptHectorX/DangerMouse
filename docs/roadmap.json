@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 24,
+    "revision": 25,
     "updated": "2026-08-01",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -332,6 +332,13 @@
         }
       ],
       "changelog": [
+        {
+          "id": "cl-dm-21",
+          "title": "Level-Fortschritts-Lichter (1/2/3)",
+          "body": "Drei einzeln positionierbare gruene Lichter (green_light1/2/3). Leuchten nur bei Level-Abschluss: Level1 fertig -> Licht1, Level2 -> 1+2, Level3 -> alle 3 + wildes (phasenversetztes) Blinken. GameState.levels_done haelt den Fortschritt; Level1 rastet ein, wenn das Ziel unter Strom steht. Im Editor immer sichtbar zum Ausrichten.",
+          "rev": 25,
+          "date": "2026-08-01"
+        },
         {
           "id": "cl-dm-20",
           "title": "Szene im Editor sichtbar/positionierbar",
