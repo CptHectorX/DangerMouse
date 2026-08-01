@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 20,
+    "revision": 21,
     "updated": "2026-08-01",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -332,6 +332,13 @@
         }
       ],
       "changelog": [
+        {
+          "id": "cl-dm-17",
+          "title": "Balancing: 1 Maus, laenger im Loch",
+          "body": "Level 1 hat jetzt max EINE Maus (statt 3), die deutlich laenger im Loch wartet (8-16s statt 1-4.5s) - sonst keine Chance. Rechtes Mauseloch mittig gefixt. Maus spawnt in zufaelligem Loch.",
+          "rev": 21,
+          "date": "2026-08-01"
+        },
         {
           "id": "cl-dm-16",
           "title": "DM-011: Maeuse spawnen aus Loechern",
