@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 18,
+    "revision": 19,
     "updated": "2026-08-01",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -332,6 +332,13 @@
         }
       ],
       "changelog": [
+        {
+          "id": "cl-dm-15",
+          "title": "DM-013: Maus trifft Strom -> Explosion",
+          "body": "Maus auf stromfuehrendem Feld -> prozedurale Explosion (Ring+Funken, scripts/explosion.gd). Getroffenes Feld + 4 Nachbarn: vom Spieler gesetzte Teile fallen zurueck in die Ablage (feste/Algorithmus-Teile via board.fixed bleiben). Danach neue Maus. Spawn aus Loechern + Spawn-Kurve folgen (DM-011/014).",
+          "rev": 19,
+          "date": "2026-08-01"
+        },
         {
           "id": "cl-dm-14",
           "title": "Hopsende Maus (Testlauf)",
