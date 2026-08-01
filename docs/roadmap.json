@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 19,
+    "revision": 20,
     "updated": "2026-08-01",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -332,6 +332,13 @@
         }
       ],
       "changelog": [
+        {
+          "id": "cl-dm-16",
+          "title": "DM-011: Maeuse spawnen aus Loechern",
+          "body": "Drei Maeuseloecher (oben-links, rechts, unten-links) starten je mit einer Maus, die wackelt und dann zeitversetzt (random) aufs Feld hopst. Mehrere Maeuse gleichzeitig moeglich. Bei Explosion spawnt eine neue im Loch. Spawn-Kurve (immer mehr) folgt DM-014.",
+          "rev": 20,
+          "date": "2026-08-01"
+        },
         {
           "id": "cl-dm-15",
           "title": "DM-013: Maus trifft Strom -> Explosion",
