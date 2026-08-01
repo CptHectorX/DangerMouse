@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 17,
+    "revision": 18,
     "updated": "2026-08-01",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -332,6 +332,13 @@
         }
       ],
       "changelog": [
+        {
+          "id": "cl-dm-14",
+          "title": "Hopsende Maus (Testlauf)",
+          "body": "scripts/mouse.gd: Maus hopst rastergebunden Karo-zu-Karo (mit Bogen), bleibt zufaellig stehen, schaut sich um (Wackeln), laeuft weiter. Echtes Maus-Asset (700x700) verdrahtet. Spawn aus Loechern + Pfade + Strom-Kollision folgen (DM-011/013).",
+          "rev": 18,
+          "date": "2026-08-01"
+        },
         {
           "id": "cl-dm-13",
           "title": "Stecker richtungsabhaengig",
