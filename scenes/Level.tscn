@@ -7,4 +7,5 @@
 script = ExtResource("1_level")
 
 [node name="GameTimer" parent="." instance=ExtResource("2_timer")]
-position = Vector2(48, 916)
+position = Vector2(48, 958)
+scale = Vector2(0.8, 0.8)
