@@ -16,6 +16,7 @@ const MouseScript := preload("res://scripts/mouse.gd")
 
 var mouse: Node
 var board: Board
+var show_grid := true
 var inventory := {"switch": 14, "lever": 12, "straight": 22, "curve": 10, "plug": 6}
 var active := "switch"
 
@@ -28,6 +29,10 @@ func _ready() -> void:
 	_rebuild()
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_K:
+		show_grid = not show_grid
+		_rebuild()
+		return
 	if not (event is InputEventMouseButton and event.pressed):
 		return
 	if event.button_index == MOUSE_BUTTON_LEFT:
@@ -114,10 +119,11 @@ func _add_background() -> void:
 	bg.texture = load(AssetConfig.BG_LEVEL1)
 	bg.position = Vector2(960, 540)
 	add_child(bg)
-	var grid := Sprite2D.new()
-	grid.texture = load(AssetConfig.BG_LEVEL1_GRID)
-	grid.position = Vector2(960, 540)
-	add_child(grid)
+	if show_grid:
+		var grid := Sprite2D.new()
+		grid.texture = load(AssetConfig.BG_LEVEL1_GRID)
+		grid.position = Vector2(960, 540)
+		add_child(grid)
 
 func _add_field_markers() -> void:
 	for cell in [ENTRY, EXIT]:
