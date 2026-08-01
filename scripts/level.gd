@@ -141,6 +141,8 @@ func _rebuild() -> void:
 	for child in _dyn.get_children():
 		child.free()
 	var powered := board.powered_cells()
+	if powered.has(EXIT) and GameState.levels_done < 1:
+		GameState.levels_done = 1
 	_add_pieces(powered)
 	_add_lightning(powered)
 	_add_tray()
