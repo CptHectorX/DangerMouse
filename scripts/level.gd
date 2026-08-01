@@ -18,11 +18,11 @@ const ExplosionScript := preload("res://scripts/explosion.gd")
 var mice := []
 var _holes := []
 var board: Board
-var show_grid := true
-var inventory := {"switch": 14, "lever": 12, "straight": 22, "curve": 10, "plug": 6}
-var active := "switch"
+var _dyn: Node2D
 
 func _ready() -> void:
+	_dyn = Node2D.new()
+	add_child(_dyn)
 	board = Board.new()
 	board.entry = ENTRY
 	board.exit = EXIT
@@ -58,13 +58,15 @@ func _explode_at(cell: Vector2i, m: Node) -> void:
 	var boom = ExplosionScript.new()
 	boom.position = _center(cell)
 	add_child(boom)
-	var h = _holes[randi() % _holes.size()]
-	m.spawn_in_hole(h[0], h[1])
+	var hole = _holes[randi() % _holes.size()]
+	m.spawn_in_hole(hole[0], hole[1])
+
+var inventory := {"switch": 14, "lever": 12, "straight": 22, "curve": 10, "plug": 6}
+var active := "switch"
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_K:
-		show_grid = not show_grid
-		_rebuild()
+		$Grid.visible = not $Grid.visible
 		return
 	if not (event is InputEventMouseButton and event.pressed):
 		return
@@ -136,37 +138,13 @@ func _center(cell: Vector2i) -> Vector2:
 	return ORIGIN + Vector2(cell.x * SLOT + SLOT / 2.0, cell.y * SLOT + SLOT / 2.0)
 
 func _rebuild() -> void:
-	for child in get_children():
-		if child.is_in_group("mouse") or child.is_in_group("fx") or child.is_in_group("keep"):
-			continue
+	for child in _dyn.get_children():
 		child.free()
-	_add_background()
 	var powered := board.powered_cells()
-	_add_field_markers()
 	_add_pieces(powered)
 	_add_lightning(powered)
 	_add_tray()
 	_add_hud(board.is_goal_powered())
-
-func _add_background() -> void:
-	var bg := Sprite2D.new()
-	bg.texture = load(AssetConfig.BG_LEVEL1)
-	bg.position = Vector2(960, 540)
-	add_child(bg)
-	if show_grid:
-		var grid := Sprite2D.new()
-		grid.texture = load(AssetConfig.BG_LEVEL1_GRID)
-		grid.position = Vector2(960, 540)
-		add_child(grid)
-
-func _add_field_markers() -> void:
-	for cell in [ENTRY, EXIT]:
-		var r := ColorRect.new()
-		r.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		r.position = _center(cell) - Vector2(SLOT, SLOT) / 2.0
-		r.size = Vector2(SLOT, SLOT)
-		r.color = Color(1.0, 0.9, 0.35, 0.22)
-		add_child(r)
 
 func _sprite(path: String, at: Vector2, live: bool, rot_deg := 0.0) -> void:
 	var s := Sprite2D.new()
@@ -175,7 +153,7 @@ func _sprite(path: String, at: Vector2, live: bool, rot_deg := 0.0) -> void:
 	s.rotation_degrees = rot_deg
 	s.scale = Vector2(SLOT / 128.0, SLOT / 128.0)
 	s.modulate = Color(1, 1, 1) if live else Color(0.45, 0.45, 0.5)
-	add_child(s)
+	_dyn.add_child(s)
 
 func _lever(at: Vector2, live: bool, dir: int) -> void:
 	var s := Sprite2D.new()
@@ -187,7 +165,7 @@ func _lever(at: Vector2, live: bool, dir: int) -> void:
 	s.scale = Vector2(SLOT / 128.0, SLOT / 128.0)
 	s.z_index = 2
 	s.modulate = Color(1, 1, 1) if live else Color(0.45, 0.45, 0.5)
-	add_child(s)
+	_dyn.add_child(s)
 
 func _piece_tex(type: int) -> String:
 	match type:
@@ -222,7 +200,7 @@ func _add_lightning(powered: Dictionary) -> void:
 		segs.append([_center(EXIT), GOAL_PX])
 	var bolt = LightningScript.new()
 	bolt.z_index = 30
-	add_child(bolt)
+	_dyn.add_child(bolt)
 	bolt.setup(segs)
 
 func _tray_rect(i: int) -> Rect2:
@@ -246,31 +224,31 @@ func _add_tray() -> void:
 		box.position = rect.position
 		box.size = rect.size
 		box.color = Color(1, 0.9, 0.3, 0.35) if type == active else Color(0, 0, 0, 0.45)
-		add_child(box)
+		_dyn.add_child(box)
 		var s := Sprite2D.new()
 		s.texture = load(_card_tex(type))
 		s.position = rect.position + Vector2(48, 40)
 		s.scale = Vector2(0.5, 0.5)
-		add_child(s)
+		_dyn.add_child(s)
 		var label := Label.new()
 		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		label.text = "%s\n%s x%d" % [str(i + 1), TRAY_NAME[type], inventory[type]]
 		label.position = rect.position + Vector2(2, 60)
 		label.add_theme_font_size_override("font_size", 13)
-		add_child(label)
+		_dyn.add_child(label)
 
 func _add_hud(won: bool) -> void:
 	var help := Label.new()
 	help.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	help.text = "Schalter aufs gelbe Landefeld (links) -> sofort unter Strom. Links: setzen/entfernen  Rechts: drehen"
+	help.text = "Schalter aufs gelbe Landefeld (links) -> sofort unter Strom. Links: setzen/entfernen  Rechts: drehen  K: Raster"
 	help.position = Vector2(500, 26)
 	help.add_theme_font_size_override("font_size", 24)
 	help.modulate = Color(1, 1, 1, 0.9)
-	add_child(help)
+	_dyn.add_child(help)
 	var status := Label.new()
 	status.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	status.text = "STROM AM ZIEL!" if won else "kein Strom am Ziel"
 	status.position = Vector2(1470, 26)
 	status.add_theme_font_size_override("font_size", 30)
 	status.modulate = Color(1.0, 0.9, 0.3) if won else Color(0.9, 0.5, 0.5)
-	add_child(status)
+	_dyn.add_child(status)

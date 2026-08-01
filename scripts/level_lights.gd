@@ -1,3 +1,4 @@
+@tool
 extends Node2D
 
 const OFFSETS := [Vector2(-48, 0), Vector2(0, 0), Vector2(48, 0)]
@@ -6,10 +7,12 @@ const RADIUS := 15.0
 var t := 0.0
 
 func _ready() -> void:
-	add_to_group("keep")
 	z_index = 55
+	queue_redraw()
 
 func _process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
 	t += delta
 	queue_redraw()
 

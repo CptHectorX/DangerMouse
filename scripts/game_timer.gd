@@ -1,3 +1,4 @@
+@tool
 extends Node2D
 
 const TOTAL := 300.0
@@ -22,14 +23,16 @@ const DIGITS := [
 var t := TOTAL
 
 func _ready() -> void:
-	add_to_group("keep")
 	add_to_group("timer")
 	z_index = 60
+	queue_redraw()
 
 func current_color() -> Color:
 	return _color()
 
 func _process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
 	if t > 0.0:
 		t = maxf(0.0, t - delta)
 	queue_redraw()
