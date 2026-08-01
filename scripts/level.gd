@@ -1,36 +1,27 @@
 extends Node2D
 
 const SLOT := 64
+const ORIGIN := Vector2(512, 220)
 const COLS := 15
 const ROWS := 9
-const ORIGIN := Vector2(512, 220)
-
-const START_CELL := Vector2i(-2, 2)
-const GOAL_CELL := Vector2i(16, 8)
+const ENTRY := Vector2i(0, 2)
+const EXIT := Vector2i(14, 8)
 const START_PX := Vector2(372, 380)
 const GOAL_PX := Vector2(1500, 812)
 
 const TRAY := ["switch", "lever", "straight", "curve", "plug"]
 const TRAY_NAME := {"switch": "Schalter", "lever": "Hebel", "straight": "Kabel |", "curve": "Kabel L", "plug": "Stecker"}
+const LightningScript := preload("res://scripts/lightning.gd")
 
 var board: Board
-var inventory := {"switch": 14, "lever": 12, "straight": 22, "curve": 10, "plug": 4}
+var inventory := {"switch": 14, "lever": 12, "straight": 22, "curve": 10, "plug": 6}
 var active := "switch"
-var _glow: Array = []
-var _t := 0.0
 
 func _ready() -> void:
 	board = Board.new()
-	board.start = START_CELL
-	board.goal = GOAL_CELL
+	board.entry = ENTRY
+	board.exit = EXIT
 	_rebuild()
-
-func _process(delta: float) -> void:
-	_t += delta
-	var pulse := 0.72 + 0.28 * sin(_t * 9.0)
-	for node in _glow:
-		if is_instance_valid(node):
-			node.modulate.a = pulse
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton and event.pressed):
@@ -53,7 +44,7 @@ func _in_grid(cell: Vector2i) -> bool:
 
 func _left_grid(pos: Vector2) -> void:
 	var cell := _cell_at(pos)
-	if not _in_grid(cell) or cell == board.start or cell == board.goal:
+	if not _in_grid(cell):
 		return
 	if active == "lever":
 		if board.switches.has(cell) and board.switches[cell] == Board.NO_LEVER and inventory["lever"] > 0:
@@ -100,24 +91,18 @@ func _remove(cell: Vector2i) -> void:
 		board.cables.erase(cell)
 
 func _center(cell: Vector2i) -> Vector2:
-	if cell == START_CELL:
-		return START_PX
-	if cell == GOAL_CELL:
-		return GOAL_PX
 	return ORIGIN + Vector2(cell.x * SLOT + SLOT / 2.0, cell.y * SLOT + SLOT / 2.0)
 
 func _rebuild() -> void:
 	for child in get_children():
 		child.free()
-	_glow = []
 	_add_background()
 	var powered := board.powered_cells()
-	_add_current(powered)
-	_add_terminal(board.start, "START", Color(0.3, 0.9, 0.4), powered.has(board.start))
-	_add_terminal(board.goal, "ZIEL", Color(1.0, 0.8, 0.1), powered.has(board.goal))
+	_add_field_markers()
 	_add_pieces(powered)
+	_add_lightning(powered)
 	_add_tray()
-	_add_hud(powered.has(board.goal))
+	_add_hud(board.is_goal_powered())
 
 func _add_background() -> void:
 	var bg := Sprite2D.new()
@@ -127,51 +112,16 @@ func _add_background() -> void:
 	var grid := Sprite2D.new()
 	grid.texture = load(AssetConfig.BG_LEVEL1_GRID)
 	grid.position = Vector2(960, 540)
-	grid.modulate = Color(1, 1, 1, 0.7)
 	add_child(grid)
 
-func _add_current(powered: Dictionary) -> void:
-	var seen := {}
-	for cell in powered:
-		for nb in board.neighbors(cell):
-			if not powered.has(nb):
-				continue
-			var key := str(cell) + str(nb)
-			if seen.has(key) or seen.has(str(nb) + str(cell)):
-				continue
-			seen[key] = true
-			var line := Line2D.new()
-			line.add_point(_center(cell))
-			line.add_point(_center(nb))
-			line.width = 10
-			line.default_color = Color(1.0, 0.92, 0.2)
-			line.begin_cap_mode = Line2D.LINE_CAP_ROUND
-			line.end_cap_mode = Line2D.LINE_CAP_ROUND
-			line.z_index = 20
-			add_child(line)
-			_glow.append(line)
-
-func _add_terminal(cell: Vector2i, text: String, col: Color, live: bool) -> void:
-	var rect := ColorRect.new()
-	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	rect.size = Vector2(SLOT, SLOT)
-	rect.position = _center(cell) - Vector2(SLOT, SLOT) / 2.0
-	rect.color = Color(col, 0.85 if live else 0.5)
-	add_child(rect)
-	if live:
-		_glow.append(rect)
-	var label := Label.new()
-	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	label.text = text
-	label.position = rect.position + Vector2(2, SLOT / 2.0 - 9)
-	label.add_theme_font_size_override("font_size", 13)
-	add_child(label)
-
-func _piece_tex(type: int) -> String:
-	match type:
-		Board.Cable.CURVE: return AssetConfig.CABLE_CURVE
-		Board.Cable.PLUG: return AssetConfig.CABLE_PLUG
-	return AssetConfig.CABLE_STRAIGHT
+func _add_field_markers() -> void:
+	for cell in [ENTRY, EXIT]:
+		var r := ColorRect.new()
+		r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		r.position = _center(cell) - Vector2(SLOT, SLOT) / 2.0
+		r.size = Vector2(SLOT, SLOT)
+		r.color = Color(1.0, 0.9, 0.35, 0.22)
+		add_child(r)
 
 func _sprite(path: String, at: Vector2, live: bool, rot_deg := 0.0) -> void:
 	var s := Sprite2D.new()
@@ -181,17 +131,6 @@ func _sprite(path: String, at: Vector2, live: bool, rot_deg := 0.0) -> void:
 	s.scale = Vector2(SLOT / 128.0, SLOT / 128.0)
 	s.modulate = Color(1, 1, 1) if live else Color(0.45, 0.45, 0.5)
 	add_child(s)
-
-func _add_pieces(powered: Dictionary) -> void:
-	for cell in board.cables:
-		var data = board.cables[cell]
-		_sprite(_piece_tex(data["type"]), _center(cell), powered.has(cell), data["rot"] * 90.0)
-	for cell in board.switches:
-		var live: bool = powered.has(cell)
-		_sprite(AssetConfig.SWITCH, _center(cell), live)
-		var lever = board.switches[cell]
-		if lever != Board.NO_LEVER:
-			_lever(_center(cell), live, lever)
 
 func _lever(at: Vector2, live: bool, dir: int) -> void:
 	var s := Sprite2D.new()
@@ -205,8 +144,53 @@ func _lever(at: Vector2, live: bool, dir: int) -> void:
 	s.modulate = Color(1, 1, 1) if live else Color(0.45, 0.45, 0.5)
 	add_child(s)
 
+func _piece_tex(type: int) -> String:
+	match type:
+		Board.Cable.CURVE: return AssetConfig.CABLE_CURVE
+		Board.Cable.PLUG: return AssetConfig.CABLE_PLUG
+	return AssetConfig.CABLE_STRAIGHT
+
+func _add_pieces(powered: Dictionary) -> void:
+	for cell in board.cables:
+		var data = board.cables[cell]
+		_sprite(_piece_tex(data["type"]), _center(cell), powered.has(cell), data["rot"] * 90.0)
+	for cell in board.switches:
+		var live: bool = powered.has(cell)
+		_sprite(AssetConfig.SWITCH, _center(cell), live)
+		var lever = board.switches[cell]
+		if lever != Board.NO_LEVER:
+			_lever(_center(cell), live, lever)
+
+func _add_lightning(powered: Dictionary) -> void:
+	var segs := [[START_PX, _center(ENTRY)]]
+	var seen := {}
+	for cell in powered:
+		for nb in board.neighbors(cell):
+			if not powered.has(nb):
+				continue
+			var key := str(cell) + str(nb)
+			if seen.has(key) or seen.has(str(nb) + str(cell)):
+				continue
+			seen[key] = true
+			segs.append([_center(cell), _center(nb)])
+	if powered.has(EXIT):
+		segs.append([_center(EXIT), GOAL_PX])
+	var bolt = LightningScript.new()
+	bolt.z_index = 30
+	add_child(bolt)
+	bolt.setup(segs)
+
 func _tray_rect(i: int) -> Rect2:
 	return Rect2(520 + i * 150, 958, 96, 96)
+
+func _card_tex(type: String) -> String:
+	match type:
+		"switch": return AssetConfig.SWITCH
+		"lever": return AssetConfig.LEVER
+		"straight": return AssetConfig.CABLE_STRAIGHT
+		"curve": return AssetConfig.CABLE_CURVE
+		"plug": return AssetConfig.CABLE_PLUG
+	return AssetConfig.SWITCH
 
 func _add_tray() -> void:
 	for i in TRAY.size():
@@ -230,21 +214,12 @@ func _add_tray() -> void:
 		label.add_theme_font_size_override("font_size", 13)
 		add_child(label)
 
-func _card_tex(type: String) -> String:
-	match type:
-		"switch": return AssetConfig.SWITCH
-		"lever": return AssetConfig.LEVER
-		"straight": return AssetConfig.CABLE_STRAIGHT
-		"curve": return AssetConfig.CABLE_CURVE
-		"plug": return AssetConfig.CABLE_PLUG
-	return AssetConfig.SWITCH
-
 func _add_hud(won: bool) -> void:
 	var help := Label.new()
 	help.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	help.text = "Karte unten waehlen · Links: setzen / entfernen · Rechts: drehen"
+	help.text = "Schalter aufs gelbe Landefeld (links) -> sofort unter Strom. Links: setzen/entfernen  Rechts: drehen"
 	help.position = Vector2(500, 26)
-	help.add_theme_font_size_override("font_size", 26)
+	help.add_theme_font_size_override("font_size", 24)
 	help.modulate = Color(1, 1, 1, 0.9)
 	add_child(help)
 	var status := Label.new()

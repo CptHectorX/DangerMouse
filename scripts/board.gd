@@ -4,14 +4,9 @@ enum Dir { UP, RIGHT, DOWN, LEFT }
 enum Cable { STRAIGHT, CURVE, PLUG }
 
 const NO_LEVER := -1
-const NO_CELL := Vector2i(-9999, -9999)
-const MAX_JUMP := 4
 
-var cols := 0
-var rows := 0
-var usable := {}
-var start := Vector2i.ZERO
-var goal := Vector2i.ZERO
+var entry := Vector2i.ZERO
+var exit := Vector2i.ZERO
 var switches := {}
 var cables := {}
 
@@ -46,11 +41,14 @@ func set_lever(cell: Vector2i, lever: int) -> void:
 		switches[cell] = lever
 
 func is_goal_powered() -> bool:
-	return goal in powered_cells()
+	return powered_cells().has(exit)
 
 func powered_cells() -> Dictionary:
-	var seen := { start: true }
-	var stack := [start]
+	var seen := {}
+	if not switches.has(entry):
+		return seen
+	seen[entry] = true
+	var stack := [entry]
 	while not stack.is_empty():
 		for nb in _neighbors(stack.pop_back()):
 			if not seen.has(nb):
@@ -61,11 +59,8 @@ func powered_cells() -> Dictionary:
 func neighbors(cell: Vector2i) -> Array:
 	return _neighbors(cell)
 
-func _is_terminal(cell: Vector2i) -> bool:
-	return cell == start or cell == goal
-
 func _is_occupied(cell: Vector2i) -> bool:
-	return switches.has(cell) or cables.has(cell) or _is_terminal(cell)
+	return switches.has(cell) or cables.has(cell)
 
 func _cable_sides(type: int, rot: int) -> Array:
 	var base := []
@@ -79,7 +74,7 @@ func _cable_sides(type: int, rot: int) -> Array:
 	return out
 
 func _open_sides(cell: Vector2i) -> Array:
-	if _is_terminal(cell) or switches.has(cell):
+	if switches.has(cell):
 		return [Dir.UP, Dir.RIGHT, Dir.DOWN, Dir.LEFT]
 	if cables.has(cell):
 		return _cable_sides(cables[cell]["type"], cables[cell]["rot"])
@@ -103,30 +98,4 @@ func _neighbors(cell: Vector2i) -> Array:
 		var far = cell + delta(d) * 2
 		if not _is_occupied(mid) and switches.has(far) and switches[far] == opposite(d):
 			res.append(far)
-		var term = _ray_terminal(cell, d)
-		if term != NO_CELL:
-			res.append(term)
-	if _is_terminal(cell):
-		for dir in [Dir.UP, Dir.RIGHT, Dir.DOWN, Dir.LEFT]:
-			var sw = _ray_switch(cell, dir)
-			if sw != NO_CELL:
-				res.append(sw)
 	return res
-
-func _ray_terminal(from: Vector2i, dir: int) -> Vector2i:
-	for step in range(1, MAX_JUMP + 1):
-		var c := from + delta(dir) * step
-		if _is_terminal(c):
-			return c
-		if _is_occupied(c):
-			return NO_CELL
-	return NO_CELL
-
-func _ray_switch(from: Vector2i, dir: int) -> Vector2i:
-	for step in range(1, MAX_JUMP + 1):
-		var c := from + delta(dir) * step
-		if _is_occupied(c):
-			if switches.has(c) and switches[c] == opposite(dir):
-				return c
-			return NO_CELL
-	return NO_CELL
