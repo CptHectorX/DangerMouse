@@ -5,6 +5,3 @@
 
 # Claude Code: persoenliche Settings nicht einchecken
 .claude/settings.local.json
-
-# Jam-Originale (nur lokal, fertige Fassungen liegen auf jam in game/art/)
-art_master/
