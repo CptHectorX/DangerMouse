@@ -47,19 +47,31 @@ func _on_mouse_landed(cell: Vector2i, m: Node) -> void:
 		_explode_at(cell, m)
 
 func _explode_at(cell: Vector2i, m: Node) -> void:
-	for c in [cell, cell + Vector2i(0, -1), cell + Vector2i(1, 0), cell + Vector2i(0, 1), cell + Vector2i(-1, 0)]:
-		if board.fixed.has(c):
-			if board.switches.has(c) and board.switches[c] != Board.NO_LEVER:
-				inventory["lever"] += 1
-				board.switches[c] = Board.NO_LEVER
-		else:
-			_remove(c)
+	_reset_all()
 	_rebuild()
 	var boom = ExplosionScript.new()
 	boom.position = _center(cell)
 	add_child(boom)
 	var hole = _holes[randi() % _holes.size()]
 	m.spawn_in_hole(hole[0], hole[1])
+
+func _reset_all() -> void:
+	for c in board.cables.keys():
+		match board.cables[c]["type"]:
+			Board.Cable.STRAIGHT: inventory["straight"] += 1
+			Board.Cable.CURVE: inventory["curve"] += 1
+			Board.Cable.PLUG: inventory["plug"] += 1
+	board.cables.clear()
+	for c in board.switches.keys():
+		if board.fixed.has(c):
+			if board.switches[c] != Board.NO_LEVER:
+				inventory["lever"] += 1
+				board.switches[c] = Board.NO_LEVER
+		else:
+			if board.switches[c] != Board.NO_LEVER:
+				inventory["lever"] += 1
+			inventory["switch"] += 1
+			board.switches.erase(c)
 
 var inventory := {"switch": 14, "lever": 12, "straight": 22, "curve": 10, "plug": 6}
 var active := "switch"
@@ -92,6 +104,8 @@ func _left_grid(pos: Vector2) -> void:
 		return
 	if active == "lever":
 		if board.switches.has(cell) and board.switches[cell] == Board.NO_LEVER and inventory["lever"] > 0:
+			if not _can_build_at(cell):
+				return
 			board.set_lever(cell, Board.Dir.RIGHT)
 			inventory["lever"] -= 1
 			_rebuild()
@@ -102,6 +116,8 @@ func _left_grid(pos: Vector2) -> void:
 		return
 	if inventory[active] <= 0:
 		return
+	if not _can_build_at(cell):
+		return
 	match active:
 		"switch": board.place_switch(cell)
 		"straight": board.place_cable(cell, Board.Cable.STRAIGHT)
@@ -109,6 +125,19 @@ func _left_grid(pos: Vector2) -> void:
 		"plug": board.place_cable(cell, Board.Cable.PLUG)
 	inventory[active] -= 1
 	_rebuild()
+
+func _can_build_at(cell: Vector2i) -> bool:
+	if cell == ENTRY:
+		return true
+	var powered := board.powered_cells()
+	for d in [Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0)]:
+		var nb: Vector2i = cell + d
+		if powered.has(nb):
+			return true
+		var far: Vector2i = cell + d * 2
+		if powered.has(far) and board.switches.has(far) and not board.switches.has(nb) and not board.cables.has(nb):
+			return true
+	return false
 
 func _right_grid(pos: Vector2) -> void:
 	var cell := _cell_at(pos)

@@ -1,34 +1,37 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene format=3 uid="uid://b38lkb6tdhwxc"]
 
-[ext_resource type="Script" path="res://scripts/level.gd" id="1_level"]
-[ext_resource type="Texture2D" path="res://assets/bg_level1.png" id="2_bg"]
-[ext_resource type="Texture2D" path="res://assets/bg_level1_grid.png" id="3_grid"]
+[ext_resource type="Script" uid="uid://bqm0i0shbvv6g" path="res://scripts/level.gd" id="1_level"]
+[ext_resource type="Texture2D" uid="uid://csidd3osbb3n8" path="res://assets/bg_level1.png" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://f1aplcemh4kr" path="res://assets/bg_level1_grid.png" id="3_grid"]
 [ext_resource type="PackedScene" path="res://scenes/GameTimer.tscn" id="4_timer"]
 [ext_resource type="PackedScene" path="res://scenes/GreenLight.tscn" id="5_light"]
 
-[node name="Level" type="Node2D"]
+[node name="Level" type="Node2D" unique_id=1592056667]
 script = ExtResource("1_level")
 
-[node name="Background" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="." unique_id=810578734]
 position = Vector2(960, 540)
 texture = ExtResource("2_bg")
 
-[node name="Grid" type="Sprite2D" parent="."]
+[node name="Grid" type="Sprite2D" parent="." unique_id=15306803]
 position = Vector2(960, 540)
 texture = ExtResource("3_grid")
 
-[node name="GameTimer" parent="." instance=ExtResource("4_timer")]
+[node name="GameTimer" parent="." unique_id=276027402 instance=ExtResource("4_timer")]
+z_index = 60
 position = Vector2(48, 958)
 scale = Vector2(0.8, 0.8)
 
-[node name="green_light1" parent="." instance=ExtResource("5_light")]
-position = Vector2(1636, 809)
-light_index = 1
+[node name="green_light1" parent="." unique_id=1785995431 instance=ExtResource("5_light")]
+z_index = 55
+position = Vector2(1610, 814)
 
-[node name="green_light2" parent="." instance=ExtResource("5_light")]
-position = Vector2(1684, 809)
+[node name="green_light2" parent="." unique_id=2003038594 instance=ExtResource("5_light")]
+z_index = 55
+position = Vector2(1663, 815)
 light_index = 2
 
-[node name="green_light3" parent="." instance=ExtResource("5_light")]
-position = Vector2(1732, 809)
+[node name="green_light3" parent="." unique_id=583971162 instance=ExtResource("5_light")]
+z_index = 55
+position = Vector2(1712, 820)
 light_index = 3
