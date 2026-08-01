@@ -15,7 +15,8 @@ const LightningScript := preload("res://scripts/lightning.gd")
 const MouseScript := preload("res://scripts/mouse.gd")
 const ExplosionScript := preload("res://scripts/explosion.gd")
 
-var mouse: Node
+var mice := []
+var _holes := []
 var board: Board
 var show_grid := true
 var inventory := {"switch": 14, "lever": 12, "straight": 22, "curve": 10, "plug": 6}
@@ -25,16 +26,27 @@ func _ready() -> void:
 	board = Board.new()
 	board.entry = ENTRY
 	board.exit = EXIT
-	mouse = MouseScript.new()
-	add_child(mouse)
-	mouse.landed.connect(_on_mouse_landed)
+	_holes = [
+		[Vector2(415, 150), Vector2i(0, 0)],
+		[Vector2(1610, 295), Vector2i(14, 1)],
+		[Vector2(283, 800), Vector2i(0, 8)],
+	]
+	for h in _holes:
+		_spawn_mouse(h[0], h[1])
 	_rebuild()
 
-func _on_mouse_landed(cell: Vector2i) -> void:
-	if board.powered_cells().has(cell):
-		_explode_at(cell)
+func _spawn_mouse(hole_pos: Vector2, emerge_cell: Vector2i) -> void:
+	var m = MouseScript.new()
+	add_child(m)
+	m.landed.connect(_on_mouse_landed.bind(m))
+	m.spawn_in_hole(hole_pos, emerge_cell)
+	mice.append(m)
 
-func _explode_at(cell: Vector2i) -> void:
+func _on_mouse_landed(cell: Vector2i, m: Node) -> void:
+	if board.powered_cells().has(cell):
+		_explode_at(cell, m)
+
+func _explode_at(cell: Vector2i, m: Node) -> void:
 	for c in [cell, cell + Vector2i(0, -1), cell + Vector2i(1, 0), cell + Vector2i(0, 1), cell + Vector2i(-1, 0)]:
 		if board.fixed.has(c):
 			if board.switches.has(c) and board.switches[c] != Board.NO_LEVER:
@@ -46,18 +58,8 @@ func _explode_at(cell: Vector2i) -> void:
 	var boom = ExplosionScript.new()
 	boom.position = _center(cell)
 	add_child(boom)
-	_respawn_mouse()
-
-func _respawn_mouse() -> void:
-	var powered := board.powered_cells()
-	var free_cells := []
-	for x in COLS:
-		for y in ROWS:
-			if not powered.has(Vector2i(x, y)):
-				free_cells.append(Vector2i(x, y))
-	if free_cells.is_empty():
-		free_cells.append(Vector2i(0, 0))
-	mouse.reset_to(free_cells[randi() % free_cells.size()])
+	var h = _holes[randi() % _holes.size()]
+	m.spawn_in_hole(h[0], h[1])
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_K:
@@ -135,8 +137,9 @@ func _center(cell: Vector2i) -> Vector2:
 
 func _rebuild() -> void:
 	for child in get_children():
-		if child != mouse and not child.is_in_group("fx"):
-			child.free()
+		if child.is_in_group("mouse") or child.is_in_group("fx"):
+			continue
+		child.free()
 	_add_background()
 	var powered := board.powered_cells()
 	_add_field_markers()
