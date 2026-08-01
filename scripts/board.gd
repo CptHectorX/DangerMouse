@@ -67,7 +67,7 @@ func _cable_sides(type: int, rot: int) -> Array:
 	match type:
 		Cable.STRAIGHT: base = [Dir.LEFT, Dir.RIGHT]
 		Cable.CURVE: base = [Dir.LEFT, Dir.DOWN]
-		Cable.PLUG: base = [Dir.RIGHT]
+		Cable.PLUG: base = [Dir.LEFT, Dir.RIGHT]
 	var out := []
 	for d in base:
 		out.append(rotate_dir(d, rot))
@@ -84,6 +84,10 @@ func _border_connects(a: Vector2i, dir: int, b: Vector2i) -> bool:
 	if not _is_occupied(a) or not _is_occupied(b):
 		return false
 	if switches.has(a) and switches.has(b):
+		return false
+	if switches.has(a) and cables.has(b) and cables[b]["type"] != Cable.PLUG:
+		return false
+	if switches.has(b) and cables.has(a) and cables[a]["type"] != Cable.PLUG:
 		return false
 	return _open_sides(a).has(dir) and _open_sides(b).has(opposite(dir))
 
