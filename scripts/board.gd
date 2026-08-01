@@ -10,6 +10,7 @@ var exit := Vector2i.ZERO
 var switches := {}
 var cables := {}
 var fixed := {}
+var links := []
 
 static func delta(dir: int) -> Vector2i:
 	match dir:
@@ -105,4 +106,9 @@ func _neighbors(cell: Vector2i) -> Array:
 		var far = cell + delta(d) * 2
 		if not _is_occupied(mid) and switches.has(far) and switches[far] == opposite(d):
 			res.append(far)
+	for link in links:
+		if link[0] == cell and switches.has(link[1]):
+			res.append(link[1])
+		elif link[1] == cell and switches.has(link[0]):
+			res.append(link[0])
 	return res

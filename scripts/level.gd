@@ -9,7 +9,20 @@ const EXIT := Vector2i(14, 8)
 const START_PX := Vector2(372, 380)
 const GOAL_PX := Vector2(1500, 812)
 
-const TRAY := ["switch", "lever", "straight", "curve", "plug"]
+const PLACEABLE := [
+	"######...######",
+	"#######..######",
+	"######...######",
+	"#######...#####",
+	"########..#####",
+	"########...####",
+	"#########...###",
+	"##########..###",
+	"##########..###",
+]
+const RESERVE := {"lever": 2, "straight": 1, "curve": 1, "plug": 1}
+
+const TRAY := ["lever", "straight", "curve", "plug"]
 const TRAY_NAME := {"switch": "Schalter", "lever": "Hebel", "straight": "Kabel |", "curve": "Kabel L", "plug": "Stecker"}
 const LightningScript := preload("res://scripts/lightning.gd")
 const MouseScript := preload("res://scripts/mouse.gd")
@@ -33,7 +46,36 @@ func _ready() -> void:
 	]
 	var h = _holes[randi() % _holes.size()]
 	_spawn_mouse(h[0], h[1])
+	_load_random_layout()
+
+func _load_random_layout() -> void:
+	_load_layout(Level1Layouts.LAYOUTS[randi() % Level1Layouts.LAYOUTS.size()])
+
+func _load_layout(layout) -> void:
+	board.switches.clear()
+	board.cables.clear()
+	board.fixed.clear()
+	board.links.clear()
+	for s in layout["switches"]:
+		var c := Vector2i(s[0], s[1])
+		board.place_switch(c)
+		board.fixed[c] = true
+	for lk in layout["links"]:
+		board.links.append([Vector2i(lk[0][0], lk[0][1]), Vector2i(lk[1][0], lk[1][1])])
+	var res = layout["resources"]
+	inventory = {
+		"lever": res["lever"] + RESERVE["lever"],
+		"straight": res["straight"] + RESERVE["straight"],
+		"curve": res["curve"] + RESERVE["curve"],
+		"plug": res["plug"] + RESERVE["plug"],
+	}
+	active = "lever"
 	_rebuild()
+
+func _placeable(cell: Vector2i) -> bool:
+	if cell.y < 0 or cell.y >= ROWS or cell.x < 0 or cell.x >= COLS:
+		return false
+	return PLACEABLE[cell.y][cell.x] == "#"
 
 func _spawn_mouse(hole_pos: Vector2, emerge_cell: Vector2i) -> void:
 	var m = MouseScript.new()
@@ -74,7 +116,7 @@ func _reset_all() -> void:
 			board.switches.erase(c)
 
 var inventory := {"switch": 14, "lever": 12, "straight": 22, "curve": 10, "plug": 6}
-var active := "switch"
+var active := "lever"
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_K:
@@ -83,6 +125,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton and event.pressed):
 		return
 	if event.button_index == MOUSE_BUTTON_LEFT:
+		if has_node("ReloadButton") and event.position.distance_to($ReloadButton.position) < 46.0:
+			_load_random_layout()
+			return
 		for i in TRAY.size():
 			if _tray_rect(i).has_point(event.position):
 				active = TRAY[i]
@@ -100,7 +145,7 @@ func _in_grid(cell: Vector2i) -> bool:
 
 func _left_grid(pos: Vector2) -> void:
 	var cell := _cell_at(pos)
-	if not _in_grid(cell):
+	if not _placeable(cell):
 		return
 	if active == "lever":
 		if board.switches.has(cell) and board.switches[cell] == Board.NO_LEVER and inventory["lever"] > 0:
@@ -141,7 +186,7 @@ func _can_build_at(cell: Vector2i) -> bool:
 
 func _right_grid(pos: Vector2) -> void:
 	var cell := _cell_at(pos)
-	if not _in_grid(cell):
+	if not _placeable(cell):
 		return
 	if board.switches.has(cell) and board.switches[cell] != Board.NO_LEVER:
 		board.switches[cell] = (board.switches[cell] + 1) % 4
@@ -271,7 +316,7 @@ func _add_tray() -> void:
 func _add_hud(won: bool) -> void:
 	var help := Label.new()
 	help.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	help.text = "Schalter aufs gelbe Landefeld (links) -> sofort unter Strom. Links: setzen/entfernen  Rechts: drehen  K: Raster"
+	help.text = "Verbinde die Schalter von Start (links) zum Ziel (rechts). Links: setzen/entfernen  Rechts: drehen  K: Raster  Gruener Pfeil: neues Layout"
 	help.position = Vector2(500, 26)
 	help.add_theme_font_size_override("font_size", 24)
 	help.modulate = Color(1, 1, 1, 0.9)
