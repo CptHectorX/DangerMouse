@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 10,
+    "revision": 11,
     "updated": "2026-08-01",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -332,6 +332,13 @@
         }
       ],
       "changelog": [
+        {
+          "id": "cl-dm-07",
+          "title": "Interaktiver Prototyp: Karten setzen/drehen + Strom sichtbar",
+          "body": "scenes/Level.tscn ist jetzt spielbar: Karten-Ablage (Schalter/Hebel/Kabel/Stecker mit Stueckzahlen), Links setzen/entfernen, Rechts drehen. Strom flutet live vom Start (0,2) zum Ziel (14,8) auf dem echten 15x9-Raster und wird als pulsierende Leitung gezeigt (hoert am Bruch auf). Erster Schritt Richtung DM-006. START/ZIEL an die roten Felder angenaehert (Raster-Kante); rote Marker liegen ~2 Zellen ausserhalb des Baurasters.",
+          "rev": 11,
+          "date": "2026-08-01"
+        },
         {
           "id": "cl-dm-06",
           "title": "Level 1: echte Assets + 64px-Slot-Raster",
