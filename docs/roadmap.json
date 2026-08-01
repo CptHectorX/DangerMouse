@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 28,
+    "revision": 29,
     "updated": "2026-08-01",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -332,6 +332,13 @@
         }
       ],
       "changelog": [
+        {
+          "id": "cl-dm-25",
+          "title": "Algorithmus-Layouts + Riss + Reload",
+          "body": "Schalter werden jetzt vom Algorithmus fest gesetzt (Pool aus 3 validiert-loesbaren Layouts, level1_layouts.gd), der Spieler bekommt berechnete Hebel/Kabel/Stecker und puzzelt sie zusammen. Neues Riss-Grid teilt das Feld; fester Bruecken-Schalter im Riss traegt den Strom automatisch rueber (board.links). Schalter aus dem Tray raus. Gruener Reload-Button laedt zufaellig neues Layout (voller Reset), Countdown laeuft weiter. Bruecke=automatisch, Ressourcen=knapp+kleine Reserve (beides einstellbar).",
+          "rev": 29,
+          "date": "2026-08-01"
+        },
         {
           "id": "cl-dm-24",
           "title": "Trick dokumentiert: Strom kappen (gewollt)",
