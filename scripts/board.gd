@@ -56,6 +56,9 @@ func powered_cells() -> Dictionary:
 				stack.append(nb)
 	return seen
 
+func neighbors(cell: Vector2i) -> Array:
+	return _neighbors(cell)
+
 func _is_terminal(cell: Vector2i) -> bool:
 	return cell == start or cell == goal
 
