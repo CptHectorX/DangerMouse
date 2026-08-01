@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 8,
+    "revision": 9,
     "updated": "2026-08-01",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -94,12 +94,12 @@
           "id": "dm-004",
           "title": "Datenmodell: Knoten und Hebel",
           "phase": "tag1",
-          "status": "todo",
+          "status": "done",
           "tags": [
             "kern"
           ],
-          "notes": "Kein Raster. Knoten sind von Hand gesetzte Marker im Bild. Ein Hebel hat einen Drehpunkt und je Richtung (W/A/S/D) hoechstens einen Zielknoten; Richtungen ohne Zielknoten sind erlaubt und bedeuten Leerstellung. Hebellaenge ergibt sich aus Julis Zeichnung.",
-          "date": "",
+          "notes": "Kein Raster. Knoten sind von Hand gesetzte Marker im Bild. Ein Hebel hat einen Drehpunkt und je Richtung (W/A/S/D) hoechstens einen Zielknoten; Richtungen ohne Zielknoten sind erlaubt und bedeuten Leerstellung. Hebellaenge ergibt sich aus Julis Zeichnung.\n\n--- Umgesetzt 2026-08-01 (bitte testen) ---\nDatenmodell in scripts/board.gd (class_name Board): Raster, nutzbare Slots, Start/Ziel, Schalter (mit Hebel-Richtung), Kabel (Typ STRAIGHT/CURVE/PLUG + Rotation). Verbindungslogik nach BESTAETIGTEM Modell B: Hebelbruecke verbindet zwei Schalter ueber ein leeres Feld, wenn beide Hebel aufeinander zeigen; Kabel verbinden ueber Seiten-Konnektoren; Schalter leiten an alle Verbindungen weiter. is_goal_powered() flutet vom Start (BFS). Headless getestet (scripts/tests/test_board.gd): Hebelbruecke leitet / weggedreht kein Strom / Kabelkurve / reiner Kabelweg -> ALLE TESTS OK. Kabel-Assets (cable_plug/straight/curve) in asset_config.gd + Platzhalter + Juli-Doku ergaenzt. HINWEIS: alte Notiz 'Kein Raster' ist ueberholt -> siehe Doku-Karte Spielkonzept. Layout-Generator (Budget + 1-3 Loesungen + JSON) folgt als eigenes Ticket.",
+          "date": "2026-08-01",
           "num": 4
         },
         {
@@ -333,6 +333,13 @@
       ],
       "changelog": [
         {
+          "id": "cl-dm-05",
+          "title": "DM-004: Datenmodell + Stromfluss (Modell B)",
+          "body": "scripts/board.gd: Raster/Schalter/Hebel/Kabel + is_goal_powered() (BFS-Flut vom Start). Hebelbruecke ueber ein leeres Feld (Modell B, bestaetigt), Kabel ueber Seiten-Konnektoren. Headless-Tests gruen. Kabel-Assets + Platzhalter ergaenzt. Generator folgt als eigenes Ticket.",
+          "rev": 9,
+          "date": "2026-08-01"
+        },
+        {
           "id": "cl-dm-04",
           "title": "Spielkonzept (Kern-Loop) dokumentiert",
           "body": "Ressourcen-/Karten-Loop festgehalten: begrenzte Karten (Schalter/Hebel/Kabel), live bauen unter Timer, Maus-Links setzen / Maus-Rechts drehen, Maeuse reissen Kreise -> Karten fallen zurueck. Generator rechnet Slots+Budget+1-3 Loesungen. Siehe Doku-Karte \"Spielkonzept\". DM-004 baut hierauf.",
@@ -364,13 +371,13 @@
       "docs": [
         {
           "id": "doc-spielkonzept",
-          "title": "Spielkonzept: Kern-Loop (v1, bitte gegenlesen)",
-          "body": "**Stand:** 2026-08-01 (v1, bitte gegenlesen). Einzige Wahrheit fuer den Kern-Loop. Tickets richten sich hiernach.\n\n**Ziel:** Strom von Start zu Ziel leiten -> Rakete startet. 3 Level, ein 5-Min-Timer ueber alles. Maeuse stoeren.\n\n**Raster & Slots:** 128er-Raster pro Level (~8x5 bis 12x5 Bloecke, exakt mit den Screens). Eine Map-PNG markiert die **nutzbaren Slots**. Start- und Zielpunkt sind ins Hintergrundbild gezeichnet.\n\n**Ressourcen = Karten (der Kern):** Der Spieler hat **begrenzte Karten** (= die 128x128-Assets) unten in einer Ablage und muss damit **haushalten**. Er **baut live**, waehrend der Timer laeuft.\n\n**Kartentypen:**\n- **Schalter** (Quadrat): auf einen nutzbaren Slot gesetzt -> Slot wird leitfaehig (Knoten).\n- **Hebel**: auf einen Schalter gesetzt -> verbindet ihn mit **einem** direkten Nachbar-Schalter in Hebel-Richtung (1 Feld). Maeuse-verwundbar.\n- **Kabel**: ueberbrueckt mehrere Felder oder ersetzt den Hebel; verbindet Schalter ueber Distanz. Fest/maeusesicher. Sorten: **Stecker-Kabel** (Start/Ende), **gerade**, **Kurve**.\n\n**Steuerung:** Maus-Links = **setzen**, Maus-Rechts = **drehen** (Spieler rotiert die Assets selbst -> keine vorrotierten Varianten noetig).\n\n**Stromfluss:** Flutet vom Start ueber verbundene, leitfaehige Slots. Ziel erreicht = Level geschafft.\n\n**Maeuse / Unterbrechung:** Reisst eine Maus den Stromkreis, **fallen die betroffenen Karten zurueck in die Ablage** und muessen neu gelegt werden. Druck steigt mit der Spawn-Kurve.\n\n**Bonus 'Ressourcen':** Nichts ist vorgesetzt - der Spieler entscheidet, was er wo setzt, und muss die knappen Ressourcen schlau einsetzen.\n\n**Generator (eigenes Ticket) rechnet aus:** (1) nutzbare Slots, (2) Karten-Budget je Typ, (3) nur **1-3 Loesungen** je Variante. Viele validierte Varianten -> JSON -> Levelstart laedt zufaellig eine.\n\n**Offene Annahmen (bitte pruefen):**\n- A) Hebel = Verbindung zum **gewaehlten** Nachbarn (Modell A). NICHT mehr 'beide zeigen aufeinander' (Modell B) - das war eine fruehere Entscheidung, die deine neue Beschreibung ueberholt. Bewusst so?\n- B) Bei Unterbrechung fallen **nur die Karten des unterbrochenen Kreises** zurueck (oder wirklich alle?).\n- C) Ein Schalter traegt **einen** Hebel = eine Nachbar-Verbindung; mehr Reichweite/Verzweigung via Kabel.\n\n**Anzupassende Tickets:** DM-006 (Steuerung: jetzt Maus1/Maus2 statt 'kein Klick'), DM-013 (Maus -> Karten fallen zurueck statt 'Hebel in Leerstellung'), DM-004/005/007 hiernach ausrichten. Assets: switch, lever, mouse, hole, 4x bg bleiben; NEU/umbenannt fuer Kabel: cable_plug (Stecker Start/Ende), cable_straight (gerade), cable_curve (Kurve). Wird bei DM-004 in asset_config.gd + Juli-Doku nachgezogen."
+          "title": "Spielkonzept: Kern-Loop (v2, bestaetigt)",
+          "body": "**Stand:** 2026-08-01 (v2, Kern-Loop bestaetigt). Einzige Wahrheit fuer den Loop. Tickets richten sich hiernach.\n\n**Ziel:** Strom von Start zu Ziel leiten -> Rakete startet. 3 Level, ein 5-Min-Timer ueber alles. Maeuse stoeren.\n\n**Raster & Slots:** 128er-Raster pro Level (~8x5 bis 12x5 Bloecke, exakt mit den Screens). Eine Map-PNG markiert die **nutzbaren Slots**. Start- und Zielpunkt sind ins Hintergrundbild gezeichnet.\n\n**Ressourcen = Karten (der Kern):** Der Spieler hat **begrenzte Karten** (= die 128x128-Assets) unten in einer Ablage und muss damit **haushalten**. Er **baut live**, waehrend der Timer laeuft.\n\n**Kartentypen:**\n- **Schalter** (Quadrat): auf einen nutzbaren Slot gesetzt -> Slot wird leitfaehig (Knoten).\n- **Hebel**: auf einen Schalter gesetzt, mit einer Richtung. Verbindet zwei Schalter, die **ein leeres Feld auseinander** stehen: beide Hebel reichen in die Mittelzelle und treffen sich dort (**Modell B**, gegenseitig). Ein Schalter traegt **einen** Hebel = **eine** solche Bruecke. Maeuse-verwundbar.\n- **Kabel**: fuer mehr Reichweite/Verzweigung (mehr als ein Feld) oder wenn kein Hebel da. Fest/maeusesicher. Sorten: **Stecker-Kabel** (Start/Ende), **gerade**, **Kurve**.\n\n**Steuerung:** Maus-Links = **setzen**, Maus-Rechts = **drehen** (Spieler rotiert selbst -> keine vorrotierten Varianten noetig).\n\n**Stromfluss:** Flutet vom Start ueber verbundene, leitfaehige Slots (Hebelbruecken + Kabel mischbar -> Durchleiten ueber viele Zellen). Ziel erreicht = Level geschafft.\n\n**Maeuse / Unterbrechung:** Explodiert eine Maus an einem Kreis, fallen die **direkt benachbarten Karten** zurueck in die Ablage und muessen neu gelegt werden. Druck steigt mit der Spawn-Kurve.\n\n**Bonus 'Ressourcen':** Nichts ist vorgesetzt - der Spieler entscheidet, was er wo setzt, und muss die knappen Ressourcen schlau einsetzen.\n\n**Generator (eigenes Ticket) rechnet aus:** (1) nutzbare Slots, (2) Karten-Budget je Typ, (3) nur **1-3 Loesungen** je Variante. Viele validierte Varianten -> JSON -> Levelstart laedt zufaellig eine.\n\n**Bestaetigt (2026-08-01):** Modell B (Hebelbruecke ueber ein leeres Feld, gegenseitig) | Ein Hebel pro Schalter | Bei Explosion fallen nur die benachbarten Karten.\n\n**Anzupassende Tickets:** DM-006 (Steuerung: Maus1 setzen / Maus2 drehen statt 'kein Klick'), DM-013 (Maus -> benachbarte Karten fallen zurueck statt 'Hebel in Leerstellung'), DM-005/007 hiernach ausrichten."
         },
         {
           "id": "doc-asset-sizes",
           "title": "Asset-Masze fuer Juli (Platzhalter gleichnamig ersetzen)",
-          "body": "Platzhalter liegen in assets/ (haesslich, korrekt benannt + dimensioniert). Bitte GLEICHNAMIG ersetzen, dann muss kein Code / keine Szene angefasst werden (DM-021).\n\n**Hintergruende** (male in 3840x2160, wird auf 1920 gerechnet):\n- bg_level1.png -- Sicherungskasten -- 1920x1080\n- bg_level2.png -- Platine -- 1920x1080\n- bg_level3.png -- Kontrollpult -- 1920x1080\n- bg_title.png -- Titelbild -- 1920x1080\n\n**Sprites** (transparenter Hintergrund):\n- switch.png -- Schalter -- 128x128\n- lever.png -- Hebel -- 128x128 (Drehpunkt Mitte)\n- mouse.png -- Maus -- 700x800 (im Spiel ~150x171, proportional ueber Breite)\n- hole.png -- Mauseloch -- 275x288\n\n**Raster:** 128er. Schalter + Hebel je 128x128, 128 Luecke dazwischen (Mitte-zu-Mitte 256). Start-/Zielknoten werden ins Hintergrundbild gezeichnet (kein eigenes Asset). Rakete: kein Asset (spaeter klaeren, erst Level 3). Explosion: per Skript, kein Asset."
+          "body": "Platzhalter liegen in assets/ (haesslich, korrekt benannt + dimensioniert). Bitte GLEICHNAMIG ersetzen, dann muss kein Code / keine Szene angefasst werden (DM-021).\n\n**Hintergruende** (male in 3840x2160, wird auf 1920 gerechnet):\n- bg_level1.png -- Sicherungskasten -- 1920x1080\n- bg_level2.png -- Platine -- 1920x1080\n- bg_level3.png -- Kontrollpult -- 1920x1080\n- bg_title.png -- Titelbild -- 1920x1080\n\n**Sprites** (transparenter Hintergrund):\n- switch.png -- Schalter -- 128x128\n- lever.png -- Hebel -- 128x128 (Drehpunkt Mitte)\n- mouse.png -- Maus -- 700x800 (im Spiel ~150x171, proportional ueber Breite)\n- hole.png -- Mauseloch -- 275x288\n\n**Raster:** 128er. Schalter + Hebel je 128x128, 128 Luecke dazwischen (Mitte-zu-Mitte 256). Start-/Zielknoten werden ins Hintergrundbild gezeichnet (kein eigenes Asset). Rakete: kein Asset (spaeter klaeren, erst Level 3). Explosion: per Skript, kein Asset.\n\n**Kabel** (Spieler rotiert selbst per Maus-Rechts -> je Typ EIN Asset, nicht vorrotiert):\n- cable_plug.png -- Stecker-Kabel (Start/Ende) -- 128x128\n- cable_straight.png -- gerade -- 128x128\n- cable_curve.png -- Kurve -- 128x128"
         }
       ],
       "architecture": {
