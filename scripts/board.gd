@@ -67,7 +67,7 @@ func _cable_sides(type: int, rot: int) -> Array:
 	var base := []
 	match type:
 		Cable.STRAIGHT: base = [Dir.LEFT, Dir.RIGHT]
-		Cable.CURVE: base = [Dir.LEFT, Dir.DOWN]
+		Cable.CURVE: base = [Dir.UP, Dir.RIGHT]
 		Cable.PLUG: base = [Dir.LEFT, Dir.RIGHT]
 	var out := []
 	for d in base:
