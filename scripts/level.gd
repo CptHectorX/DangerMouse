@@ -1,7 +1,7 @@
 extends Node2D
 
 const CELL := 128
-const ORIGIN := Vector2(440, 320)
+const ORIGIN := Vector2(360, 260)
 
 func _ready() -> void:
 	_add_background()
@@ -15,6 +15,11 @@ func _add_background() -> void:
 	bg.texture = load(AssetConfig.BG_LEVEL1)
 	bg.position = Vector2(960, 540)
 	add_child(bg)
+	var grid := Sprite2D.new()
+	grid.texture = load(AssetConfig.BG_LEVEL1_GRID)
+	grid.position = Vector2(960, 540)
+	grid.modulate = Color(1, 1, 1, 0.55)
+	add_child(grid)
 
 func _demo_board() -> Board:
 	var b := Board.new()
@@ -31,7 +36,7 @@ func _cell_center(cell: Vector2i) -> Vector2:
 	return ORIGIN + Vector2(cell.x * CELL + CELL / 2.0, cell.y * CELL + CELL / 2.0)
 
 func _tint(item: CanvasItem, live: bool) -> void:
-	item.modulate = Color(1.0, 0.85, 0.2) if live else Color(0.5, 0.5, 0.55)
+	item.modulate = Color(1, 1, 1) if live else Color(0.4, 0.4, 0.45)
 
 func _sprite(path: String, cell: Vector2i, live: bool, rot_deg := 0.0) -> void:
 	var s := Sprite2D.new()
