@@ -5,6 +5,11 @@ const COLS := 15
 const ROWS := 9
 const ORIGIN := Vector2(512, 220)
 
+const START_CELL := Vector2i(-2, 2)
+const GOAL_CELL := Vector2i(16, 8)
+const START_PX := Vector2(372, 380)
+const GOAL_PX := Vector2(1500, 812)
+
 const TRAY := ["switch", "lever", "straight", "curve", "plug"]
 const TRAY_NAME := {"switch": "Schalter", "lever": "Hebel", "straight": "Kabel |", "curve": "Kabel L", "plug": "Stecker"}
 
@@ -16,8 +21,8 @@ var _t := 0.0
 
 func _ready() -> void:
 	board = Board.new()
-	board.start = Vector2i(0, 2)
-	board.goal = Vector2i(14, 8)
+	board.start = START_CELL
+	board.goal = GOAL_CELL
 	_rebuild()
 
 func _process(delta: float) -> void:
@@ -95,6 +100,10 @@ func _remove(cell: Vector2i) -> void:
 		board.cables.erase(cell)
 
 func _center(cell: Vector2i) -> Vector2:
+	if cell == START_CELL:
+		return START_PX
+	if cell == GOAL_CELL:
+		return GOAL_PX
 	return ORIGIN + Vector2(cell.x * SLOT + SLOT / 2.0, cell.y * SLOT + SLOT / 2.0)
 
 func _rebuild() -> void:
@@ -182,7 +191,19 @@ func _add_pieces(powered: Dictionary) -> void:
 		_sprite(AssetConfig.SWITCH, _center(cell), live)
 		var lever = board.switches[cell]
 		if lever != Board.NO_LEVER:
-			_sprite(AssetConfig.LEVER, _center(cell), live, (lever - Board.Dir.RIGHT) * 90.0)
+			_lever(_center(cell), live, lever)
+
+func _lever(at: Vector2, live: bool, dir: int) -> void:
+	var s := Sprite2D.new()
+	s.texture = load(AssetConfig.LEVER)
+	s.centered = false
+	s.offset = Vector2(0, -64)
+	s.position = at
+	s.rotation_degrees = (dir - Board.Dir.RIGHT) * 90.0
+	s.scale = Vector2(SLOT / 128.0, SLOT / 128.0)
+	s.z_index = 2
+	s.modulate = Color(1, 1, 1) if live else Color(0.45, 0.45, 0.5)
+	add_child(s)
 
 func _tray_rect(i: int) -> Rect2:
 	return Rect2(520 + i * 150, 958, 96, 96)

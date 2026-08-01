@@ -99,6 +99,12 @@ func _neighbors(cell: Vector2i) -> Array:
 		var d = switches[cell]
 		var mid = cell + delta(d)
 		var far = cell + delta(d) * 2
-		if not _is_occupied(mid) and switches.has(far) and switches[far] == opposite(d):
+		if not _is_occupied(mid) and (_is_terminal(far) or (switches.has(far) and switches[far] == opposite(d))):
 			res.append(far)
+	if _is_terminal(cell):
+		for dir in [Dir.UP, Dir.RIGHT, Dir.DOWN, Dir.LEFT]:
+			var m = cell + delta(dir)
+			var f = cell + delta(dir) * 2
+			if not _is_occupied(m) and switches.has(f) and switches[f] == opposite(dir):
+				res.append(f)
 	return res
