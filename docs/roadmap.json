@@ -3,8 +3,8 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 7,
-    "updated": "2026-07-31",
+    "revision": 8,
+    "updated": "2026-08-01",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
   "acts": [
@@ -333,6 +333,13 @@
       ],
       "changelog": [
         {
+          "id": "cl-dm-04",
+          "title": "Spielkonzept (Kern-Loop) dokumentiert",
+          "body": "Ressourcen-/Karten-Loop festgehalten: begrenzte Karten (Schalter/Hebel/Kabel), live bauen unter Timer, Maus-Links setzen / Maus-Rechts drehen, Maeuse reissen Kreise -> Karten fallen zurueck. Generator rechnet Slots+Budget+1-3 Loesungen. Siehe Doku-Karte \"Spielkonzept\". DM-004 baut hierauf.",
+          "rev": 8,
+          "date": "2026-08-01"
+        },
+        {
           "id": "cl-dm-03",
           "title": "DM-003: asset_config.gd + Platzhalter-Assets",
           "body": "Zentrale scripts/asset_config.gd (alle Pfade als Konstanten) und Platzhalter-Sprites in assets/ angelegt (128er-Raster: switch/lever 128, mouse 700x800->~150x171, hole 275x288, 4x bg 1920x1080). Juli ersetzt gleichnamig, ohne Code/Szenen zu beruehren. Massliste als Doku-Karte im Board. Start/Ziel ins Bild, Rakete spaeter, Explosion per Skript.",
@@ -355,6 +362,11 @@
         }
       ],
       "docs": [
+        {
+          "id": "doc-spielkonzept",
+          "title": "Spielkonzept: Kern-Loop (v1, bitte gegenlesen)",
+          "body": "**Stand:** 2026-08-01 (v1, bitte gegenlesen). Einzige Wahrheit fuer den Kern-Loop. Tickets richten sich hiernach.\n\n**Ziel:** Strom von Start zu Ziel leiten -> Rakete startet. 3 Level, ein 5-Min-Timer ueber alles. Maeuse stoeren.\n\n**Raster & Slots:** 128er-Raster pro Level (~8x5 bis 12x5 Bloecke, exakt mit den Screens). Eine Map-PNG markiert die **nutzbaren Slots**. Start- und Zielpunkt sind ins Hintergrundbild gezeichnet.\n\n**Ressourcen = Karten (der Kern):** Der Spieler hat **begrenzte Karten** (= die 128x128-Assets) unten in einer Ablage und muss damit **haushalten**. Er **baut live**, waehrend der Timer laeuft.\n\n**Kartentypen:**\n- **Schalter** (Quadrat): auf einen nutzbaren Slot gesetzt -> Slot wird leitfaehig (Knoten).\n- **Hebel**: auf einen Schalter gesetzt -> verbindet ihn mit **einem** direkten Nachbar-Schalter in Hebel-Richtung (1 Feld). Maeuse-verwundbar.\n- **Kabel**: ueberbrueckt mehrere Felder oder ersetzt den Hebel; verbindet Schalter ueber Distanz. Fest/maeusesicher. Sorten: **Stecker-Kabel** (Start/Ende), **gerade**, **Kurve**.\n\n**Steuerung:** Maus-Links = **setzen**, Maus-Rechts = **drehen** (Spieler rotiert die Assets selbst -> keine vorrotierten Varianten noetig).\n\n**Stromfluss:** Flutet vom Start ueber verbundene, leitfaehige Slots. Ziel erreicht = Level geschafft.\n\n**Maeuse / Unterbrechung:** Reisst eine Maus den Stromkreis, **fallen die betroffenen Karten zurueck in die Ablage** und muessen neu gelegt werden. Druck steigt mit der Spawn-Kurve.\n\n**Bonus 'Ressourcen':** Nichts ist vorgesetzt - der Spieler entscheidet, was er wo setzt, und muss die knappen Ressourcen schlau einsetzen.\n\n**Generator (eigenes Ticket) rechnet aus:** (1) nutzbare Slots, (2) Karten-Budget je Typ, (3) nur **1-3 Loesungen** je Variante. Viele validierte Varianten -> JSON -> Levelstart laedt zufaellig eine.\n\n**Offene Annahmen (bitte pruefen):**\n- A) Hebel = Verbindung zum **gewaehlten** Nachbarn (Modell A). NICHT mehr 'beide zeigen aufeinander' (Modell B) - das war eine fruehere Entscheidung, die deine neue Beschreibung ueberholt. Bewusst so?\n- B) Bei Unterbrechung fallen **nur die Karten des unterbrochenen Kreises** zurueck (oder wirklich alle?).\n- C) Ein Schalter traegt **einen** Hebel = eine Nachbar-Verbindung; mehr Reichweite/Verzweigung via Kabel.\n\n**Anzupassende Tickets:** DM-006 (Steuerung: jetzt Maus1/Maus2 statt 'kein Klick'), DM-013 (Maus -> Karten fallen zurueck statt 'Hebel in Leerstellung'), DM-004/005/007 hiernach ausrichten. Assets: switch, lever, mouse, hole, 4x bg bleiben; NEU/umbenannt fuer Kabel: cable_plug (Stecker Start/Ende), cable_straight (gerade), cable_curve (Kurve). Wird bei DM-004 in asset_config.gd + Juli-Doku nachgezogen."
+        },
         {
           "id": "doc-asset-sizes",
           "title": "Asset-Masze fuer Juli (Platzhalter gleichnamig ersetzen)",
