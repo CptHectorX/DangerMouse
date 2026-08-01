@@ -13,6 +13,7 @@ const TRAY := ["switch", "lever", "straight", "curve", "plug"]
 const TRAY_NAME := {"switch": "Schalter", "lever": "Hebel", "straight": "Kabel |", "curve": "Kabel L", "plug": "Stecker"}
 const LightningScript := preload("res://scripts/lightning.gd")
 const MouseScript := preload("res://scripts/mouse.gd")
+const ExplosionScript := preload("res://scripts/explosion.gd")
 
 var mouse: Node
 var board: Board
@@ -26,7 +27,37 @@ func _ready() -> void:
 	board.exit = EXIT
 	mouse = MouseScript.new()
 	add_child(mouse)
+	mouse.landed.connect(_on_mouse_landed)
 	_rebuild()
+
+func _on_mouse_landed(cell: Vector2i) -> void:
+	if board.powered_cells().has(cell):
+		_explode_at(cell)
+
+func _explode_at(cell: Vector2i) -> void:
+	for c in [cell, cell + Vector2i(0, -1), cell + Vector2i(1, 0), cell + Vector2i(0, 1), cell + Vector2i(-1, 0)]:
+		if board.fixed.has(c):
+			if board.switches.has(c) and board.switches[c] != Board.NO_LEVER:
+				inventory["lever"] += 1
+				board.switches[c] = Board.NO_LEVER
+		else:
+			_remove(c)
+	_rebuild()
+	var boom = ExplosionScript.new()
+	boom.position = _center(cell)
+	add_child(boom)
+	_respawn_mouse()
+
+func _respawn_mouse() -> void:
+	var powered := board.powered_cells()
+	var free_cells := []
+	for x in COLS:
+		for y in ROWS:
+			if not powered.has(Vector2i(x, y)):
+				free_cells.append(Vector2i(x, y))
+	if free_cells.is_empty():
+		free_cells.append(Vector2i(0, 0))
+	mouse.reset_to(free_cells[randi() % free_cells.size()])
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_K:
@@ -104,7 +135,7 @@ func _center(cell: Vector2i) -> Vector2:
 
 func _rebuild() -> void:
 	for child in get_children():
-		if child != mouse:
+		if child != mouse and not child.is_in_group("fx"):
 			child.free()
 	_add_background()
 	var powered := board.powered_cells()

@@ -9,6 +9,7 @@ var entry := Vector2i.ZERO
 var exit := Vector2i.ZERO
 var switches := {}
 var cables := {}
+var fixed := {}
 
 static func delta(dir: int) -> Vector2i:
 	match dir:

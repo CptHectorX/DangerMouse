@@ -1,5 +1,7 @@
 extends Sprite2D
 
+signal landed(hop_cell)
+
 const SLOT := 64
 const ORIGIN := Vector2(512, 220)
 const COLS := 15
@@ -37,6 +39,7 @@ func _process(delta: float) -> void:
 			_hopping = false
 			rotation = 0.0
 			_wait = randf_range(0.7, 1.7) if randf() < 0.4 else randf_range(0.05, 0.2)
+			landed.emit(cell)
 		else:
 			position = _from.lerp(_to, _t) - Vector2(0, sin(_t * PI) * HOP_HEIGHT)
 	else:
@@ -48,6 +51,14 @@ func _process(delta: float) -> void:
 			rotation = 0.0
 		if _wait <= 0.0:
 			_start_hop()
+
+func reset_to(c: Vector2i) -> void:
+	cell = c
+	position = _center(c)
+	_hopping = false
+	_t = 0.0
+	rotation = 0.0
+	_wait = randf_range(0.4, 1.0)
 
 func _start_hop() -> void:
 	var options := []
