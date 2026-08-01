@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 30,
+    "revision": 31,
     "updated": "2026-08-01",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -332,6 +332,13 @@
         }
       ],
       "changelog": [
+        {
+          "id": "cl-dm-27",
+          "title": "Sanftere Strafe: nur getroffenes Teil weg",
+          "body": "Maus-Treffer entfernt jetzt nur das EINE beruehrte Teil (zurueck in die Ablage), kein voller Reset mehr. Feste Schalter bleiben. Deutlich testbarer.",
+          "rev": 31,
+          "date": "2026-08-01"
+        },
         {
           "id": "cl-dm-26",
           "title": "Fix: Kontaktknoten statt Riss-Schalter",
