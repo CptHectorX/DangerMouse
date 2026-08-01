@@ -241,7 +241,6 @@ func _rebuild() -> void:
 	_add_pieces(powered)
 	_add_lightning(powered)
 	_add_tray()
-	_add_hud(board.is_goal_powered())
 
 func _sprite(path: String, at: Vector2, live: bool, rot_deg := 0.0) -> void:
 	var s := Sprite2D.new()

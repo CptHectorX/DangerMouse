@@ -15,6 +15,7 @@ position = Vector2(960, 540)
 texture = ExtResource("2_bg")
 
 [node name="Grid" type="Sprite2D" parent="." unique_id=15306803]
+visible = false
 position = Vector2(960, 540)
 texture = ExtResource("3_grid")
 
