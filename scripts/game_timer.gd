@@ -23,7 +23,11 @@ var t := TOTAL
 
 func _ready() -> void:
 	add_to_group("keep")
+	add_to_group("timer")
 	z_index = 60
+
+func current_color() -> Color:
+	return _color()
 
 func _process(delta: float) -> void:
 	if t > 0.0:
