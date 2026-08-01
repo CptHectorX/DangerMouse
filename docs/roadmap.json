@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 14,
+    "revision": 15,
     "updated": "2026-08-01",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -333,6 +333,13 @@
       ],
       "changelog": [
         {
+          "id": "cl-dm-11",
+          "title": "Doku: Lichtbogen-Renderer",
+          "body": "Technik hinter scripts/lightning.gd als Doku-Karte festgehalten (gezackte Linie per randf jeden Frame, Glow+Kern, wandernder Funke, Segmente aus dem Strompfad).",
+          "rev": 15,
+          "date": "2026-08-01"
+        },
+        {
           "id": "cl-dm-10",
           "title": "Lichtbogen-Strom + Landefeld",
           "body": "Strom springt als Lichtbogen vom Start aufs feste Landefeld (0,2); Schalter dort sofort elektrifiziert, dann frei weiterbauen (Stecker/Hebel/Kabel). Ziel spiegelbildlich (14,8) -> Bogen zur Rakete. Animierter Funken-/Brizzel-Renderer entlang des Pfads.",
@@ -413,6 +420,11 @@
           "id": "doc-asset-sizes",
           "title": "Asset-Masze fuer Juli (Platzhalter gleichnamig ersetzen)",
           "body": "Platzhalter liegen in assets/ (haesslich, korrekt benannt + dimensioniert). Bitte GLEICHNAMIG ersetzen, dann muss kein Code / keine Szene angefasst werden (DM-021).\n\n**Hintergruende** (male in 3840x2160, wird auf 1920 gerechnet):\n- bg_level1.png -- Sicherungskasten -- 1920x1080\n- bg_level2.png -- Platine -- 1920x1080\n- bg_level3.png -- Kontrollpult -- 1920x1080\n- bg_title.png -- Titelbild -- 1920x1080\n\n**Sprites** (transparenter Hintergrund):\n- switch.png -- Schalter -- 128x128\n- lever.png -- Hebel -- 128x128 (Drehpunkt Mitte)\n- mouse.png -- Maus -- 700x800 (im Spiel ~150x171, proportional ueber Breite)\n- hole.png -- Mauseloch -- 275x288\n\n**Raster:** 128er. Schalter + Hebel je 128x128, 128 Luecke dazwischen (Mitte-zu-Mitte 256). Start-/Zielknoten werden ins Hintergrundbild gezeichnet (kein eigenes Asset). Rakete: kein Asset (spaeter klaeren, erst Level 3). Explosion: per Skript, kein Asset.\n\n**Kabel** (Spieler rotiert selbst per Maus-Rechts -> je Typ EIN Asset, nicht vorrotiert):\n- cable_plug.png -- Stecker-Kabel (Start/Ende) -- 128x128\n- cable_straight.png -- gerade -- 128x128\n- cable_curve.png -- Kurve -- 128x128"
+        },
+        {
+          "id": "doc-lightning",
+          "title": "Wie der Lichtbogen funktioniert (lightning.gd)",
+          "body": "Der Blitz ist ein eigener Node2D: **scripts/lightning.gd**. Er zeichnet in `_draw()` und ruft in `_process()` jeden Frame `queue_redraw()` auf -- daher das Zucken.\n\n**Gezackte Linie (das Brizzeln):** Pro Strom-Segment (Punkt a -> b) werden 6 Zwischenpunkte auf der Strecke gesetzt (`a.lerp(b, i/7)`) und jeder **senkrecht zur Richtung** um einen Zufallswert versetzt (`perp * (randf()*2-1) * 7`). Weil `randf()` jeden Frame neu wuerfelt, zappelt die Linie = Lichtbogen.\n\n**Zwei Durchgaenge uebereinander:** erst dick + halbtransparent gelb (Gluehen, width 8), dann duenn + hell (Kern, width 2.5) mit `draw_polyline`.\n\n**Funke:** ein Punkt, der per `fmod(t*1.6 + a.x*0.003, 1.0)` an der Strecke entlangwandert (`a.lerp(b, ...)`), gezeichnet als weicher Schein + heller Kern (`draw_circle`).\n\n**Woher die Segmente:** level.gd baut in `_add_lightning()` die Liste: Start -> Landefeld, jede **stromfuehrende** Kante (aus `board.neighbors`, beide Zellen powered), und Ziel-Feld -> Rakete. So zeigt der Blitz immer genau den aktiven Pfad. `z_index = 30`, damit er ueber den Bauteilen liegt.\n\n**Wiederverwendbar:** `LightningScript.new()`, ins Bild haengen, `setup([[a,b], ...])` aufrufen -- funktioniert fuer jede Punkt-zu-Punkt-Strecke (spaeter z.B. Explosionen/Mausschlag)."
         }
       ],
       "architecture": {
