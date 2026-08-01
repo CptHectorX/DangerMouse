@@ -172,6 +172,8 @@ func _left_grid(pos: Vector2) -> void:
 		if board.switches.has(cell) and board.switches[cell] == Board.NO_LEVER and inventory["lever"] > 0:
 			if not _can_build_at(cell):
 				return
+			if not _can_lever(cell):
+				return
 			board.set_lever(cell, Board.Dir.RIGHT)
 			inventory["lever"] -= 1
 			_rebuild()
@@ -191,6 +193,14 @@ func _left_grid(pos: Vector2) -> void:
 		"plug": board.place_cable(cell, Board.Cable.PLUG)
 	inventory[active] -= 1
 	_rebuild()
+
+func _can_lever(cell: Vector2i) -> bool:
+	for d in [Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0)]:
+		var mid: Vector2i = cell + d
+		var far: Vector2i = cell + d * 2
+		if board.switches.has(far) and not board.switches.has(mid) and not board.cables.has(mid):
+			return true
+	return false
 
 func _can_build_at(cell: Vector2i) -> bool:
 	if cell == ENTRY:
@@ -222,8 +232,7 @@ func _remove(cell: Vector2i) -> void:
 	if board.switches.has(cell):
 		if board.switches[cell] != Board.NO_LEVER:
 			inventory["lever"] += 1
-		inventory["switch"] += 1
-		board.switches.erase(cell)
+			board.switches[cell] = Board.NO_LEVER
 	elif board.cables.has(cell):
 		match board.cables[cell]["type"]:
 			Board.Cable.STRAIGHT: inventory["straight"] += 1
