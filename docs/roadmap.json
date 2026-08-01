@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 12,
+    "revision": 13,
     "updated": "2026-08-01",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -332,6 +332,13 @@
         }
       ],
       "changelog": [
+        {
+          "id": "cl-dm-09",
+          "title": "Start/Ziel-Sprung springt aufs Schachbrett",
+          "body": "Terminal-Sprung ist jetzt flexibel: der Strom springt vom Aussen-Feld ueber die leere Panel-Luecke auf das erste Schalter+Hebel-Feld im Schachbrett, das auf ihn zeigt (bis 4 Felder, freie Sichtlinie). So kann man auf dem klar sichtbaren Karo bauen statt zwingend auf dem dunklen Randfeld (Spalte 0).",
+          "rev": 13,
+          "date": "2026-08-01"
+        },
         {
           "id": "cl-dm-08",
           "title": "Start/Ziel-Sprung + Hebel-Drehpunkt",
