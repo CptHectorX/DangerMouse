@@ -73,23 +73,25 @@ func _cable_sides(type: int, rot: int) -> Array:
 		out.append(rotate_dir(d, rot))
 	return out
 
-func _open_sides(cell: Vector2i) -> Array:
+func _accepts(cell: Vector2i, dir: int, other: Vector2i) -> bool:
 	if switches.has(cell):
-		return [Dir.UP, Dir.RIGHT, Dir.DOWN, Dir.LEFT]
-	if cables.has(cell):
-		return _cable_sides(cables[cell]["type"], cables[cell]["rot"])
-	return []
+		return cables.has(other) and cables[other]["type"] == Cable.PLUG
+	if not cables.has(cell):
+		return false
+	var t = cables[cell]["type"]
+	var rot = cables[cell]["rot"]
+	if t == Cable.PLUG:
+		if dir == rotate_dir(Dir.RIGHT, rot):
+			return switches.has(other)
+		if dir == rotate_dir(Dir.LEFT, rot):
+			return cables.has(other)
+		return false
+	return _cable_sides(t, rot).has(dir) and cables.has(other)
 
 func _border_connects(a: Vector2i, dir: int, b: Vector2i) -> bool:
 	if not _is_occupied(a) or not _is_occupied(b):
 		return false
-	if switches.has(a) and switches.has(b):
-		return false
-	if switches.has(a) and cables.has(b) and cables[b]["type"] != Cable.PLUG:
-		return false
-	if switches.has(b) and cables.has(a) and cables[a]["type"] != Cable.PLUG:
-		return false
-	return _open_sides(a).has(dir) and _open_sides(b).has(opposite(dir))
+	return _accepts(a, dir, b) and _accepts(b, opposite(dir), a)
 
 func _neighbors(cell: Vector2i) -> Array:
 	var res := []
