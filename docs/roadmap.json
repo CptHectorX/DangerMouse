@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 13,
+    "revision": 14,
     "updated": "2026-08-01",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -332,6 +332,13 @@
         }
       ],
       "changelog": [
+        {
+          "id": "cl-dm-10",
+          "title": "Lichtbogen-Strom + Landefeld",
+          "body": "Strom springt als Lichtbogen vom Start aufs feste Landefeld (0,2); Schalter dort sofort elektrifiziert, dann frei weiterbauen (Stecker/Hebel/Kabel). Ziel spiegelbildlich (14,8) -> Bogen zur Rakete. Animierter Funken-/Brizzel-Renderer entlang des Pfads.",
+          "rev": 14,
+          "date": "2026-08-01"
+        },
         {
           "id": "cl-dm-09",
           "title": "Start/Ziel-Sprung springt aufs Schachbrett",
