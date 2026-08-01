@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 27,
+    "revision": 28,
     "updated": "2026-08-01",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -333,6 +333,13 @@
       ],
       "changelog": [
         {
+          "id": "cl-dm-24",
+          "title": "Trick dokumentiert: Strom kappen (gewollt)",
+          "body": "Strom kappen durch Drehen eines Teils macht den Kreis maeusesicher fuer eine Denkpause -> bewusst behalten, nicht fixen. Siehe Doku-Karte.",
+          "rev": 28,
+          "date": "2026-08-01"
+        },
+        {
           "id": "cl-dm-23",
           "title": "Bau-Regel + voller Reset",
           "body": "Neu: man darf nur neben ein stromfuehrendes Feld bauen (oder in Hebel-Reichweite / aufs Landefeld) - verhindert das Vorbauen einer getrennten Kette; Setzen-dann-Drehen geht weiter. Ausserdem: reisst eine Maus den Strom, wird der ganze Kreis zurueckgesetzt (alle Spielerteile zurueck in die Ablage) - bewusste Entscheidung.",
@@ -509,6 +516,11 @@
           "id": "doc-lightning",
           "title": "Wie der Lichtbogen funktioniert (lightning.gd)",
           "body": "Der Blitz ist ein eigener Node2D: **scripts/lightning.gd**. Er zeichnet in `_draw()` und ruft in `_process()` jeden Frame `queue_redraw()` auf -- daher das Zucken.\n\n**Gezackte Linie (das Brizzeln):** Pro Strom-Segment (Punkt a -> b) werden 6 Zwischenpunkte auf der Strecke gesetzt (`a.lerp(b, i/7)`) und jeder **senkrecht zur Richtung** um einen Zufallswert versetzt (`perp * (randf()*2-1) * 7`). Weil `randf()` jeden Frame neu wuerfelt, zappelt die Linie = Lichtbogen.\n\n**Zwei Durchgaenge uebereinander:** erst dick + halbtransparent gelb (Gluehen, width 8), dann duenn + hell (Kern, width 2.5) mit `draw_polyline`.\n\n**Funke:** ein Punkt, der per `fmod(t*1.6 + a.x*0.003, 1.0)` an der Strecke entlangwandert (`a.lerp(b, ...)`), gezeichnet als weicher Schein + heller Kern (`draw_circle`).\n\n**Woher die Segmente:** level.gd baut in `_add_lightning()` die Liste: Start -> Landefeld, jede **stromfuehrende** Kante (aus `board.neighbors`, beide Zellen powered), und Ziel-Feld -> Rakete. So zeigt der Blitz immer genau den aktiven Pfad. `z_index = 30`, damit er ueber den Bauteilen liegt.\n\n**Wiederverwendbar:** `LightningScript.new()`, ins Bild haengen, `setup([[a,b], ...])` aufrufen -- funktioniert fuer jede Punkt-zu-Punkt-Strecke (spaeter z.B. Explosionen/Mausschlag)."
+        },
+        {
+          "id": "doc-trick-strom-kappen",
+          "title": "Trick (GEWOLLT): Strom kappen = Denkpause",
+          "body": "Dreht man ein Teil so, dass der Stromkreis **unterbrochen** wird, ist der Strom aus -> Maeuse koennen nichts mehr sprengen (sie explodieren **nur auf stromfuehrenden Feldern**). So kann man in Ruhe den naechsten Zug planen und danach wieder verbinden.\n\n**Das ist ein gewollter emergenter Trick und bleibt bewusst drin.** Nicht als Bug behandeln / nicht 'fixen'. (Alex + Juli finden's gut.)"
         }
       ],
       "architecture": {
