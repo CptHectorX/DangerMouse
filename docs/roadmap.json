@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 22,
+    "revision": 23,
     "updated": "2026-08-01",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -332,6 +332,13 @@
         }
       ],
       "changelog": [
+        {
+          "id": "cl-dm-19",
+          "title": "Sockel-Lichter (Level-Gimmick)",
+          "body": "Drei leuchtende Kreise auf den Raketen-Sockel-Knoepfen, pulsieren langsam in der Countdown-Farbe (gruen/orange/rot). Testweise Dauer-Blinken; spaeter nur bei Level-Ende als Fortschritts-Anzeige (welches Level). Eigene Szene LevelLights.tscn, im Editor positionierbar.",
+          "rev": 23,
+          "date": "2026-08-01"
+        },
         {
           "id": "cl-dm-18",
           "title": "DM-008: Timer 5:00 (7-Segment)",
