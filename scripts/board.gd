@@ -4,6 +4,8 @@ enum Dir { UP, RIGHT, DOWN, LEFT }
 enum Cable { STRAIGHT, CURVE, PLUG }
 
 const NO_LEVER := -1
+const NO_CELL := Vector2i(-9999, -9999)
+const MAX_JUMP := 4
 
 var cols := 0
 var rows := 0
@@ -99,12 +101,32 @@ func _neighbors(cell: Vector2i) -> Array:
 		var d = switches[cell]
 		var mid = cell + delta(d)
 		var far = cell + delta(d) * 2
-		if not _is_occupied(mid) and (_is_terminal(far) or (switches.has(far) and switches[far] == opposite(d))):
+		if not _is_occupied(mid) and switches.has(far) and switches[far] == opposite(d):
 			res.append(far)
+		var term = _ray_terminal(cell, d)
+		if term != NO_CELL:
+			res.append(term)
 	if _is_terminal(cell):
 		for dir in [Dir.UP, Dir.RIGHT, Dir.DOWN, Dir.LEFT]:
-			var m = cell + delta(dir)
-			var f = cell + delta(dir) * 2
-			if not _is_occupied(m) and switches.has(f) and switches[f] == opposite(dir):
-				res.append(f)
+			var sw = _ray_switch(cell, dir)
+			if sw != NO_CELL:
+				res.append(sw)
 	return res
+
+func _ray_terminal(from: Vector2i, dir: int) -> Vector2i:
+	for step in range(1, MAX_JUMP + 1):
+		var c := from + delta(dir) * step
+		if _is_terminal(c):
+			return c
+		if _is_occupied(c):
+			return NO_CELL
+	return NO_CELL
+
+func _ray_switch(from: Vector2i, dir: int) -> Vector2i:
+	for step in range(1, MAX_JUMP + 1):
+		var c := from + delta(dir) * step
+		if _is_occupied(c):
+			if switches.has(c) and switches[c] == opposite(dir):
+				return c
+			return NO_CELL
+	return NO_CELL
