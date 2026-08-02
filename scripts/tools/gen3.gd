@@ -132,14 +132,14 @@ func _gen_one():
 	if a == null: return null
 	var ca := Vector2i(1, 6)
 	var vr: int = [8, 9][randi() % 2]
-	var cb_col: int = [11, 12, 13][randi() % 3]
-	var cb := Vector2i(cb_col, 6)
+	var cb := Vector2i(9, 6)
 	if not _pl(cb): return null
-	var c = _build_path([ca, Vector2i(1, vr), Vector2i(cb_col, vr), cb], used)
+	var c = _build_path([ca, Vector2i(1, vr), Vector2i(9, vr), cb], used)
 	if c == null: return null
-	var bc := Vector2i(17, 4)
+	var bc := Vector2i(9, 0)
+	var rc: int = [15, 16][randi() % 2]
 	var ex := Vector2i(19, 4)
-	var b = _build_path([bc, ex], used)
+	var b = _build_path([bc, Vector2i(rc, 0), Vector2i(rc, 4), ex], used)
 	if b == null: return null
 	var switches: Array = a["chain"] + c["chain"] + b["chain"]
 	var board := Board.new()
