@@ -3,5 +3,8 @@
 /android/
 *.tmp
 
+# Web-Export-Artefakte (nicht einchecken, liegen ausserhalb der Auslieferung)
+/web_build/
+
 # Claude Code: persoenliche Settings nicht einchecken
 .claude/settings.local.json
