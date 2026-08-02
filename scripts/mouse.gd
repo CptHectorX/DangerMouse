@@ -3,9 +3,9 @@ extends Sprite2D
 signal landed(hop_cell)
 
 const SLOT := 64
-const ORIGIN := Vector2(512, 220)
-const COLS := 15
-const ROWS := 9
+var g_origin := Vector2(512, 220)
+var g_cols := 15
+var g_rows := 9
 const SIZE_PX := 96.0
 const HOP_DUR := 0.26
 const HOP_HEIGHT := 18.0
@@ -32,7 +32,7 @@ func _ready() -> void:
 	z_index = 40
 
 func _center(c: Vector2i) -> Vector2:
-	return ORIGIN + Vector2(c.x * SLOT + SLOT / 2.0, c.y * SLOT + SLOT / 2.0)
+	return g_origin + Vector2(c.x * SLOT + SLOT / 2.0, c.y * SLOT + SLOT / 2.0)
 
 func spawn_in_hole(hole_pos: Vector2, emerge_cell: Vector2i) -> void:
 	state = State.HOLE
@@ -87,7 +87,7 @@ func _start_hop() -> void:
 	var options := []
 	for d in [Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0)]:
 		var n: Vector2i = cell + d
-		if n.x >= 0 and n.x < COLS and n.y >= 0 and n.y < ROWS:
+		if n.x >= 0 and n.x < g_cols and n.y >= 0 and n.y < g_rows:
 			options.append(n)
 	if options.is_empty():
 		return

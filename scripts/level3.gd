@@ -281,14 +281,40 @@ func _inpoly(p: Vector2, poly: Array) -> bool:
 
 func _spawn_mouse(hole_pos: Vector2, emerge_cell: Vector2i) -> void:
 	var m = MouseScript.new()
+	m.g_origin = ORIGIN
+	m.g_cols = COLS
+	m.g_rows = ROWS
 	add_child(m)
 	m.landed.connect(_on_mouse_landed.bind(m))
 	m.spawn_in_hole(hole_pos, emerge_cell)
 	mice.append(m)
 
 func _on_mouse_landed(cell: Vector2i, m: Node) -> void:
-	if board.powered_cells().has(cell):
+	if _electrified(board.powered_cells()).has(cell):
 		_explode_at(cell, m)
+
+func _electrified(powered: Dictionary) -> Dictionary:
+	var e := {}
+	for c in powered:
+		e[c] = true
+	for cell in powered:
+		for nb in board.neighbors(cell):
+			if powered.has(nb):
+				for lc in _line_cells(cell, nb):
+					e[lc] = true
+	return e
+
+func _line_cells(a: Vector2i, b: Vector2i) -> Array:
+	var out := {}
+	var steps: int = max(abs(b.x - a.x), abs(b.y - a.y)) * 3
+	if steps < 1:
+		steps = 1
+	for i in range(steps + 1):
+		var t := float(i) / steps
+		var x := int(round(lerp(float(a.x), float(b.x), t)))
+		var y := int(round(lerp(float(a.y), float(b.y), t)))
+		out[Vector2i(x, y)] = true
+	return out.keys()
 
 func _explode_at(cell: Vector2i, m: Node) -> void:
 	_pop_off(cell)
