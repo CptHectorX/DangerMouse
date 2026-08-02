@@ -10,24 +10,28 @@ const CY := 660.0
 const SWEEP := 5.0
 const ROCKET_X := 1600.0
 
+@export var card_mode := "start"
+@export var card_title := "Dangermouse"
+@export var card_sub := "* insert coin *"
+
 var mode := "start"
 var _t := 0.0
 var _phase := "sweep"
 var _rt := 0.0
 var _rocket = null
+var _rocket_x := ROCKET_X
 var _exploded := false
 var _done := false
 
 func _ready() -> void:
-	mode = GameState.card_mode
-	$Title.text = GameState.card_title
+	mode = card_mode
+	$Title.text = card_title
 	_fit_title()
-	$Subtitle.text = GameState.card_sub
-	$Subtitle.visible = GameState.card_sub != ""
+	$Subtitle.text = card_sub
+	$Subtitle.visible = card_sub != ""
 	_rocket = $Rocket
 	_rocket.visible = mode == "gameover" or mode == "win"
-	if _rocket.visible:
-		_rocket.position = Vector2(ROCKET_X, CY)
+	_rocket_x = _rocket.position.x
 
 func _fit_title() -> void:
 	var maxw := 1440.0
@@ -96,9 +100,6 @@ func _explode() -> void:
 		add_child(d)
 
 func _back_to_start() -> void:
-	GameState.card_mode = "start"
-	GameState.card_title = "Dangermouse"
-	GameState.card_sub = "* insert coin *"
 	_go(CARD_SCENE)
 
 func _go(scene: String) -> void:
@@ -110,7 +111,7 @@ func _go(scene: String) -> void:
 func _head_x() -> float:
 	if mode == "start":
 		return fmod(_t, SWEEP) / SWEEP * W
-	var target := ROCKET_X if (mode == "gameover" or mode == "win") else W
+	var target := _rocket_x if (mode == "gameover" or mode == "win") else W
 	return minf(_t / SWEEP, 1.0) * target
 
 func _draw() -> void:

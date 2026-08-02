@@ -418,11 +418,8 @@ func _rebuild() -> void:
 
 func _trigger_win() -> void:
 	await get_tree().create_timer(1.0).timeout
-	GameState.card_mode = "transition"
-	GameState.card_title = "Dangermouse"
-	GameState.card_sub = ""
 	GameState.next_scene = "res://scenes/Level2.tscn"
-	get_tree().change_scene_to_file("res://scenes/TitleCard.tscn")
+	get_tree().change_scene_to_file("res://scenes/Transition.tscn")
 
 func _sprite(path: String, at: Vector2, live: bool, rot_deg := 0.0) -> void:
 	var s := Sprite2D.new()

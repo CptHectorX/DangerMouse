@@ -50,10 +50,7 @@ func _process(delta: float) -> void:
 	GameState.time_left = t
 	if t <= 0.0 and not _over:
 		_over = true
-		GameState.card_mode = "gameover"
-		GameState.card_title = "GAME OVER"
-		GameState.card_sub = ""
-		get_tree().change_scene_to_file("res://scenes/TitleCard.tscn")
+		get_tree().change_scene_to_file("res://scenes/GameOver.tscn")
 		return
 	queue_redraw()
 
