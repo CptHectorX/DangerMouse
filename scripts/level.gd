@@ -22,20 +22,29 @@ const PLACEABLE := [
 ]
 const RESERVE := {"lever": 2, "straight": 1, "curve": 1, "plug": 1}
 
-const TRAY := ["lever", "straight", "curve", "plug"]
-const TRAY_NAME := {"switch": "Schalter", "lever": "Hebel", "straight": "Kabel |", "curve": "Kabel L", "plug": "Stecker"}
 const LightningScript := preload("res://scripts/lightning.gd")
 const MouseScript := preload("res://scripts/mouse.gd")
 const ExplosionScript := preload("res://scripts/explosion.gd")
+const PieceScript := preload("res://scripts/piece.gd")
 
 var mice := []
 var _holes := []
 var board: Board
+
 var _dyn: Node2D
+var _hintbox: Node2D
+var _pieces := []
+var _held = null
+
+var inventory := {"lever": 0, "straight": 0, "curve": 0, "plug": 0}
 
 func _ready() -> void:
 	_dyn = Node2D.new()
 	add_child(_dyn)
+	_hintbox = Node2D.new()
+	_hintbox.z_index = 25
+	add_child(_hintbox)
+	_add_bounds()
 	board = Board.new()
 	board.entry = ENTRY
 	board.exit = EXIT
@@ -47,6 +56,25 @@ func _ready() -> void:
 	var h = _holes[randi() % _holes.size()]
 	_spawn_mouse(h[0], h[1])
 	_load_random_layout()
+
+func _add_bounds() -> void:
+	var flr := StaticBody2D.new()
+	var fc := CollisionShape2D.new()
+	var fs := RectangleShape2D.new()
+	fs.size = Vector2(2400, 80)
+	fc.shape = fs
+	flr.position = Vector2(960, 1120)
+	flr.add_child(fc)
+	add_child(flr)
+	for wx in [-40, 1960]:
+		var wall := StaticBody2D.new()
+		var wc := CollisionShape2D.new()
+		var ws := RectangleShape2D.new()
+		ws.size = Vector2(80, 1400)
+		wc.shape = ws
+		wall.position = Vector2(wx, 540)
+		wall.add_child(wc)
+		add_child(wall)
 
 func _load_random_layout() -> void:
 	_load_layout(Level1Layouts.LAYOUTS[randi() % Level1Layouts.LAYOUTS.size()])
@@ -72,8 +100,144 @@ func _load_layout(layout) -> void:
 		"curve": res["curve"] + RESERVE["curve"],
 		"plug": res["plug"] + RESERVE["plug"],
 	}
-	active = "lever"
+	_spawn_pile()
 	_rebuild()
+
+func _spawn_pile() -> void:
+	for p in _pieces:
+		if is_instance_valid(p):
+			p.queue_free()
+	_pieces.clear()
+	if _held != null and is_instance_valid(_held):
+		_held.queue_free()
+	_held = null
+	_clear_hint()
+	for kind in ["lever", "straight", "curve", "plug"]:
+		for i in inventory.get(kind, 0):
+			var p = _make_piece(kind)
+			p.position = Vector2(randf_range(140, 1780), randf_range(-260, -20))
+			p.set_rot(randi() % 4)
+			p.drop(Vector2(randf_range(-30, 30), 0))
+			_pieces.append(p)
+
+func _make_piece(kind: String):
+	var p = PieceScript.new()
+	p.setup(kind, _kind_tex(kind), SLOT)
+	add_child(p)
+	return p
+
+func _kind_tex(kind: String) -> String:
+	match kind:
+		"lever": return AssetConfig.LEVER
+		"straight": return AssetConfig.CABLE_STRAIGHT
+		"curve": return AssetConfig.CABLE_CURVE
+		"plug": return AssetConfig.CABLE_PLUG
+	return AssetConfig.CABLE_PLUG
+
+func _kind_type(kind: String) -> int:
+	match kind:
+		"curve": return Board.Cable.CURVE
+		"plug": return Board.Cable.PLUG
+	return Board.Cable.STRAIGHT
+
+func _type_kind(t: int) -> String:
+	match t:
+		Board.Cable.CURVE: return "curve"
+		Board.Cable.PLUG: return "plug"
+	return "straight"
+
+func _process(_delta: float) -> void:
+	if _held != null and is_instance_valid(_held):
+		_held.position = get_global_mouse_position()
+		_update_hint()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_K:
+			$Grid.visible = not $Grid.visible
+			return
+		if event.keycode == KEY_SPACE and _held != null:
+			_held.set_rot(_held.rot + 1)
+			_update_hint()
+			return
+	if not (event is InputEventMouseButton):
+		return
+	if event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			if _held != null:
+				return
+			if has_node("ReloadButton") and event.position.distance_to($ReloadButton.position) < 46.0:
+				_load_random_layout()
+				return
+			_pick(event.position)
+		elif _held != null:
+			_release(event.position)
+	elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed and _held != null:
+		_held.set_rot(_held.rot + 1)
+		_update_hint()
+
+func _pick(pos: Vector2) -> void:
+	var pk = _piece_at(pos)
+	if pk != null:
+		_pieces.erase(pk)
+		pk.hold()
+		_held = pk
+		return
+	var cell := _cell_at(pos)
+	if not _placeable(cell):
+		return
+	if board.cables.has(cell):
+		var kind := _type_kind(board.cables[cell]["type"])
+		var r: int = board.cables[cell]["rot"]
+		board.cables.erase(cell)
+		_rebuild()
+		_held = _make_piece(kind)
+		_held.set_rot(r)
+		_held.hold()
+		_held.position = pos
+	elif board.switches.has(cell) and board.switches[cell] != Board.NO_LEVER:
+		var dir: int = board.switches[cell]
+		board.switches[cell] = Board.NO_LEVER
+		_rebuild()
+		_held = _make_piece("lever")
+		_held.set_rot((dir - Board.Dir.RIGHT + 4) % 4)
+		_held.hold()
+		_held.position = pos
+
+func _piece_at(pos: Vector2):
+	var best = null
+	var bestd := SLOT * 0.62
+	for p in _pieces:
+		if not is_instance_valid(p):
+			continue
+		var d: float = p.position.distance_to(pos)
+		if d < bestd:
+			bestd = d
+			best = p
+	return best
+
+func _release(pos: Vector2) -> void:
+	var p = _held
+	_held = null
+	_clear_hint()
+	var cell := _cell_at(pos)
+	if _snap_ok(p, cell):
+		if p.kind == "lever":
+			board.set_lever(cell, (p.rot + Board.Dir.RIGHT) % 4)
+		else:
+			board.place_cable(cell, _kind_type(p.kind), p.rot)
+		p.queue_free()
+		_rebuild()
+		return
+	p.drop(Vector2(randf_range(-40, 40), -20))
+	_pieces.append(p)
+
+func _snap_ok(p, cell: Vector2i) -> bool:
+	if not _placeable(cell):
+		return false
+	if p.kind == "lever":
+		return board.switches.has(cell) and board.switches[cell] == Board.NO_LEVER and _can_build_at(cell) and _can_lever(cell)
+	return not board.switches.has(cell) and not board.cables.has(cell) and _can_build_at(cell)
 
 func _placeable(cell: Vector2i) -> bool:
 	if cell.y < 0 or cell.y >= ROWS or cell.x < 0 or cell.x >= COLS:
@@ -92,7 +256,7 @@ func _on_mouse_landed(cell: Vector2i, m: Node) -> void:
 		_explode_at(cell, m)
 
 func _explode_at(cell: Vector2i, m: Node) -> void:
-	_remove_one(cell)
+	_pop_off(cell)
 	_rebuild()
 	var boom = ExplosionScript.new()
 	boom.position = _center(cell)
@@ -100,99 +264,26 @@ func _explode_at(cell: Vector2i, m: Node) -> void:
 	var hole = _holes[randi() % _holes.size()]
 	m.spawn_in_hole(hole[0], hole[1])
 
-func _remove_one(cell: Vector2i) -> void:
+func _pop_off(cell: Vector2i) -> void:
 	if board.cables.has(cell):
-		match board.cables[cell]["type"]:
-			Board.Cable.STRAIGHT: inventory["straight"] += 1
-			Board.Cable.CURVE: inventory["curve"] += 1
-			Board.Cable.PLUG: inventory["plug"] += 1
+		var kind := _type_kind(board.cables[cell]["type"])
+		var r: int = board.cables[cell]["rot"]
 		board.cables.erase(cell)
-	elif board.switches.has(cell):
-		if board.fixed.has(cell):
-			if board.switches[cell] != Board.NO_LEVER:
-				inventory["lever"] += 1
-				board.switches[cell] = Board.NO_LEVER
-		else:
-			if board.switches[cell] != Board.NO_LEVER:
-				inventory["lever"] += 1
-			inventory["switch"] += 1
-			board.switches.erase(cell)
+		_fly_piece(kind, r, _center(cell))
+	elif board.switches.has(cell) and board.switches[cell] != Board.NO_LEVER:
+		var dir: int = board.switches[cell]
+		board.switches[cell] = Board.NO_LEVER
+		_fly_piece("lever", (dir - Board.Dir.RIGHT + 4) % 4, _center(cell))
 
-func _reset_all() -> void:
-	for c in board.cables.keys():
-		match board.cables[c]["type"]:
-			Board.Cable.STRAIGHT: inventory["straight"] += 1
-			Board.Cable.CURVE: inventory["curve"] += 1
-			Board.Cable.PLUG: inventory["plug"] += 1
-	board.cables.clear()
-	for c in board.switches.keys():
-		if board.fixed.has(c):
-			if board.switches[c] != Board.NO_LEVER:
-				inventory["lever"] += 1
-				board.switches[c] = Board.NO_LEVER
-		else:
-			if board.switches[c] != Board.NO_LEVER:
-				inventory["lever"] += 1
-			inventory["switch"] += 1
-			board.switches.erase(c)
-
-var inventory := {"switch": 14, "lever": 12, "straight": 22, "curve": 10, "plug": 6}
-var active := "lever"
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_K:
-		$Grid.visible = not $Grid.visible
-		return
-	if not (event is InputEventMouseButton and event.pressed):
-		return
-	if event.button_index == MOUSE_BUTTON_LEFT:
-		if has_node("ReloadButton") and event.position.distance_to($ReloadButton.position) < 46.0:
-			_load_random_layout()
-			return
-		for i in TRAY.size():
-			if _tray_rect(i).has_point(event.position):
-				active = TRAY[i]
-				_rebuild()
-				return
-		_left_grid(event.position)
-	elif event.button_index == MOUSE_BUTTON_RIGHT:
-		_right_grid(event.position)
+func _fly_piece(kind: String, rot: int, at: Vector2) -> void:
+	var p = _make_piece(kind)
+	p.position = at
+	p.set_rot(rot)
+	p.drop(Vector2(randf_range(-260, 260), randf_range(-520, -260)))
+	_pieces.append(p)
 
 func _cell_at(pos: Vector2) -> Vector2i:
 	return Vector2i(int(floor((pos.x - ORIGIN.x) / SLOT)), int(floor((pos.y - ORIGIN.y) / SLOT)))
-
-func _in_grid(cell: Vector2i) -> bool:
-	return cell.x >= 0 and cell.x < COLS and cell.y >= 0 and cell.y < ROWS
-
-func _left_grid(pos: Vector2) -> void:
-	var cell := _cell_at(pos)
-	if not _placeable(cell):
-		return
-	if active == "lever":
-		if board.switches.has(cell) and board.switches[cell] == Board.NO_LEVER and inventory["lever"] > 0:
-			if not _can_build_at(cell):
-				return
-			if not _can_lever(cell):
-				return
-			board.set_lever(cell, Board.Dir.RIGHT)
-			inventory["lever"] -= 1
-			_rebuild()
-		return
-	if board.switches.has(cell) or board.cables.has(cell):
-		_remove(cell)
-		_rebuild()
-		return
-	if inventory[active] <= 0:
-		return
-	if not _can_build_at(cell):
-		return
-	match active:
-		"switch": board.place_switch(cell)
-		"straight": board.place_cable(cell, Board.Cable.STRAIGHT)
-		"curve": board.place_cable(cell, Board.Cable.CURVE)
-		"plug": board.place_cable(cell, Board.Cable.PLUG)
-	inventory[active] -= 1
-	_rebuild()
 
 func _can_lever(cell: Vector2i) -> bool:
 	for d in [Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0)]:
@@ -217,31 +308,37 @@ func _can_build_at(cell: Vector2i) -> bool:
 			return true
 	return false
 
-func _right_grid(pos: Vector2) -> void:
-	var cell := _cell_at(pos)
-	if not _placeable(cell):
-		return
-	if board.switches.has(cell) and board.switches[cell] != Board.NO_LEVER:
-		board.switches[cell] = (board.switches[cell] + 1) % 4
-		_rebuild()
-	elif board.cables.has(cell):
-		board.cables[cell]["rot"] = (board.cables[cell]["rot"] + 1) % 4
-		_rebuild()
-
-func _remove(cell: Vector2i) -> void:
-	if board.switches.has(cell):
-		if board.switches[cell] != Board.NO_LEVER:
-			inventory["lever"] += 1
-			board.switches[cell] = Board.NO_LEVER
-	elif board.cables.has(cell):
-		match board.cables[cell]["type"]:
-			Board.Cable.STRAIGHT: inventory["straight"] += 1
-			Board.Cable.CURVE: inventory["curve"] += 1
-			Board.Cable.PLUG: inventory["plug"] += 1
-		board.cables.erase(cell)
-
 func _center(cell: Vector2i) -> Vector2:
 	return ORIGIN + Vector2(cell.x * SLOT + SLOT / 2.0, cell.y * SLOT + SLOT / 2.0)
+
+func _update_hint() -> void:
+	_clear_hint()
+	if _held == null:
+		return
+	var cell := _cell_at(get_global_mouse_position())
+	if not _placeable(cell):
+		return
+	var ok := _snap_ok(_held, cell)
+	var box := ColorRect.new()
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.size = Vector2(SLOT - 4, SLOT - 4)
+	box.position = _center(cell) - Vector2(SLOT / 2.0 - 2, SLOT / 2.0 - 2)
+	box.color = Color(0.3, 1.0, 0.45, 0.28) if ok else Color(1.0, 1.0, 1.0, 0.10)
+	_hintbox.add_child(box)
+	var powered := board.powered_cells()
+	for d in [Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0)]:
+		var nb: Vector2i = cell + d
+		if powered.has(nb):
+			var dot := ColorRect.new()
+			dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			dot.size = Vector2(16, 16)
+			dot.position = _center(nb) - Vector2(8, 8)
+			dot.color = Color(1.0, 0.85, 0.2, 0.75)
+			_hintbox.add_child(dot)
+
+func _clear_hint() -> void:
+	for c in _hintbox.get_children():
+		c.free()
 
 func _rebuild() -> void:
 	for child in _dyn.get_children():
@@ -251,7 +348,6 @@ func _rebuild() -> void:
 		GameState.levels_done = 1
 	_add_pieces(powered)
 	_add_lightning(powered)
-	_add_tray()
 
 func _sprite(path: String, at: Vector2, live: bool, rot_deg := 0.0) -> void:
 	var s := Sprite2D.new()
@@ -309,53 +405,3 @@ func _add_lightning(powered: Dictionary) -> void:
 	bolt.z_index = 30
 	_dyn.add_child(bolt)
 	bolt.setup(segs)
-
-func _tray_rect(i: int) -> Rect2:
-	return Rect2(520 + i * 150, 958, 96, 96)
-
-func _card_tex(type: String) -> String:
-	match type:
-		"switch": return AssetConfig.SWITCH
-		"lever": return AssetConfig.LEVER
-		"straight": return AssetConfig.CABLE_STRAIGHT
-		"curve": return AssetConfig.CABLE_CURVE
-		"plug": return AssetConfig.CABLE_PLUG
-	return AssetConfig.SWITCH
-
-func _add_tray() -> void:
-	for i in TRAY.size():
-		var type: String = TRAY[i]
-		var rect := _tray_rect(i)
-		var box := ColorRect.new()
-		box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		box.position = rect.position
-		box.size = rect.size
-		box.color = Color(1, 0.9, 0.3, 0.35) if type == active else Color(0, 0, 0, 0.45)
-		_dyn.add_child(box)
-		var s := Sprite2D.new()
-		s.texture = load(_card_tex(type))
-		s.position = rect.position + Vector2(48, 40)
-		s.scale = Vector2(0.5, 0.5)
-		_dyn.add_child(s)
-		var label := Label.new()
-		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		label.text = "%s\n%s x%d" % [str(i + 1), TRAY_NAME[type], inventory[type]]
-		label.position = rect.position + Vector2(2, 60)
-		label.add_theme_font_size_override("font_size", 13)
-		_dyn.add_child(label)
-
-func _add_hud(won: bool) -> void:
-	var help := Label.new()
-	help.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	help.text = "Verbinde die Schalter von Start (links) zum Ziel (rechts). Links: setzen/entfernen  Rechts: drehen  K: Raster  Gruener Pfeil: neues Layout"
-	help.position = Vector2(500, 26)
-	help.add_theme_font_size_override("font_size", 24)
-	help.modulate = Color(1, 1, 1, 0.9)
-	_dyn.add_child(help)
-	var status := Label.new()
-	status.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	status.text = "STROM AM ZIEL!" if won else "kein Strom am Ziel"
-	status.position = Vector2(1470, 26)
-	status.add_theme_font_size_override("font_size", 30)
-	status.modulate = Color(1.0, 0.9, 0.3) if won else Color(0.9, 0.5, 0.5)
-	_dyn.add_child(status)

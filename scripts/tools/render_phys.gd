@@ -4,7 +4,10 @@ var frames := 0
 var scn
 
 func _initialize() -> void:
-	scn = load("res://scenes/Level3.tscn").instantiate()
+	var path := OS.get_environment("SCENE")
+	if path == "":
+		path = "res://scenes/Level3.tscn"
+	scn = load(path).instantiate()
 	root.add_child(scn)
 
 func _process(_delta: float) -> bool:
