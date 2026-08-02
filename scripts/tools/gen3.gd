@@ -26,7 +26,7 @@ func _inpoly(p: Vector2, poly: Array) -> bool:
 
 const DISABLED := [
 	Vector2i(6, 3), Vector2i(7, 3),
-	Vector2i(9, 1), Vector2i(10, 1), Vector2i(9, 2), Vector2i(10, 2), Vector2i(11, 2), Vector2i(12, 2),
+	Vector2i(9, 1), Vector2i(10, 1), Vector2i(11, 1), Vector2i(9, 2), Vector2i(10, 2), Vector2i(11, 2), Vector2i(12, 2),
 	Vector2i(7, 5), Vector2i(8, 5), Vector2i(9, 5),
 	Vector2i(5, 6), Vector2i(6, 6), Vector2i(7, 6), Vector2i(8, 6),
 ]

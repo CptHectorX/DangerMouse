@@ -7,7 +7,7 @@ const ROWS := 11
 const ENTRY := Vector2i(0, 0)
 const EXIT := Vector2i(19, 4)
 const START_PX := Vector2(360, 400)
-const GOAL_PX := Vector2(1700, 452)
+const GOAL_PX := Vector2(1700, 472)
 
 const POLYS := [
 	[Vector2(366, 378), Vector2(936, 422), Vector2(900, 606), Vector2(396, 650)],
@@ -15,9 +15,11 @@ const POLYS := [
 	[Vector2(1400, 560), Vector2(1664, 672), Vector2(1664, 860), Vector2(1330, 742)],
 	[Vector2(436, 758), Vector2(1200, 712), Vector2(1384, 1032), Vector2(428, 1012)],
 ]
+const B_POLYS := [1, 2]
+const B_SHIFT := 20.0
 const DISABLED := [
 	Vector2i(6, 3), Vector2i(7, 3),
-	Vector2i(9, 1), Vector2i(10, 1), Vector2i(9, 2), Vector2i(10, 2), Vector2i(11, 2), Vector2i(12, 2),
+	Vector2i(9, 1), Vector2i(10, 1), Vector2i(11, 1), Vector2i(9, 2), Vector2i(10, 2), Vector2i(11, 2), Vector2i(12, 2),
 	Vector2i(7, 5), Vector2i(8, 5), Vector2i(9, 5),
 	Vector2i(5, 6), Vector2i(6, 6), Vector2i(7, 6), Vector2i(8, 6),
 ]
@@ -86,7 +88,7 @@ func _placeable(cell: Vector2i) -> bool:
 		return false
 	if DISABLED.has(cell):
 		return false
-	var p := _center(cell)
+	var p := _raw_center(cell)
 	for poly in POLYS:
 		if _inpoly(p, poly):
 			return true
@@ -184,7 +186,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		_right_grid(event.position)
 
 func _cell_at(pos: Vector2) -> Vector2i:
-	return Vector2i(int(floor((pos.x - ORIGIN.x) / SLOT)), int(floor((pos.y - ORIGIN.y) / SLOT)))
+	var cx := int(floor((pos.x - ORIGIN.x) / SLOT))
+	var c := Vector2i(cx, int(floor((pos.y - ORIGIN.y) / SLOT)))
+	var cb := Vector2i(cx, int(floor((pos.y - ORIGIN.y - B_SHIFT) / SLOT)))
+	if cb != c and _is_b(cb):
+		return cb
+	return c
 
 func _in_grid(cell: Vector2i) -> bool:
 	return cell.x >= 0 and cell.x < COLS and cell.y >= 0 and cell.y < ROWS
@@ -265,8 +272,21 @@ func _remove(cell: Vector2i) -> void:
 			Board.Cable.PLUG: inventory["plug"] += 1
 		board.cables.erase(cell)
 
-func _center(cell: Vector2i) -> Vector2:
+func _raw_center(cell: Vector2i) -> Vector2:
 	return ORIGIN + Vector2(cell.x * SLOT + SLOT / 2.0, cell.y * SLOT + SLOT / 2.0)
+
+func _is_b(cell: Vector2i) -> bool:
+	var p := _raw_center(cell)
+	for i in B_POLYS:
+		if _inpoly(p, POLYS[i]):
+			return true
+	return false
+
+func _center(cell: Vector2i) -> Vector2:
+	var c := _raw_center(cell)
+	if _is_b(cell):
+		c.y += B_SHIFT
+	return c
 
 func _update_labels() -> void:
 	for c in _labelbox.get_children():
