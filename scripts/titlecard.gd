@@ -1,6 +1,6 @@
 extends Node2D
 
-const FireBoom := preload("res://scripts/fire_boom.gd")
+const Boom := preload("res://scripts/explosion.gd")
 const Debris := preload("res://scripts/debris.gd")
 const PieceScript := preload("res://scripts/piece.gd")
 const START_SCENE := "res://scenes/Level.tscn"
@@ -104,9 +104,15 @@ func _rocket_phase(delta: float) -> void:
 func _explode() -> void:
 	var at: Vector2 = _rocket.position
 	_rocket.visible = false
-	var boom = FireBoom.new()
+	var boom = Boom.new()
 	boom.position = at
+	boom.setup(Color(1.0, 0.55, 0.2), 5.5)
 	add_child(boom)
+	for j in range(2):
+		var b2 = Boom.new()
+		b2.position = at + Vector2(randf_range(-90, 90), randf_range(-80, 60))
+		b2.setup(Color(1.0, 0.66, 0.3), 3.0)
+		add_child(b2)
 	var frag := [Color(0.45, 0.18, 0.14), Color(0.55, 0.55, 0.58), Color(0.3, 0.12, 0.1)]
 	for i in range(60):
 		var d = Debris.new()
