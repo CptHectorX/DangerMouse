@@ -48,14 +48,27 @@ func _ready() -> void:
 	board = Board.new()
 	board.entry = ENTRY
 	board.exit = EXIT
-	_holes = [
-		[Vector2(115, 95), Vector2i(6, 8)],
-		[Vector2(1030, 450), Vector2i(18, 8)],
-		[Vector2(1400, 880), Vector2i(20, 13)],
-	]
+	_holes = []
+	for hm in $Holes.get_children():
+		var hp: Vector2 = hm.global_position
+		_holes.append([hp, _nearest_emerge(hp)])
 	_spawn_mouse(_holes[0][0], _holes[0][1])
 	_spawn_mouse(_holes[2][0], _holes[2][1])
 	_load_random_layout()
+
+func _nearest_emerge(pos: Vector2) -> Vector2i:
+	var best := ENTRY
+	var bestd := 1.0e20
+	for row in ROWS:
+		for col in COLS:
+			var c := Vector2i(col, row)
+			if c == ENTRY or not _placeable(c):
+				continue
+			var d := _center(c).distance_squared_to(pos)
+			if d < bestd:
+				bestd = d
+				best = c
+	return best
 
 func _add_bounds() -> void:
 	var flr := StaticBody2D.new()

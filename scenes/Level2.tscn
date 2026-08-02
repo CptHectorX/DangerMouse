@@ -1,73 +1,88 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cur5k6kwixbr1"]
 
-[ext_resource type="Script" path="res://scripts/level2.gd" id="1_level"]
-[ext_resource type="Texture2D" path="res://assets/bg_level2.png" id="2_bg"]
+[ext_resource type="Script" uid="uid://bmu73ipiucsco" path="res://scripts/level2.gd" id="1_level"]
+[ext_resource type="Texture2D" uid="uid://c7dhwej1c1nb4" path="res://assets/bg_level2.png" id="2_bg"]
 [ext_resource type="PackedScene" path="res://scenes/GameTimer.tscn" id="3_timer"]
 [ext_resource type="PackedScene" path="res://scenes/GreenLight.tscn" id="4_light"]
 [ext_resource type="PackedScene" path="res://scenes/ReloadButton.tscn" id="5_reload"]
 [ext_resource type="PackedScene" path="res://scenes/Gloeckler.tscn" id="6_g"]
 
-[node name="Level2" type="Node2D"]
+[node name="Level2" type="Node2D" unique_id=1457195807]
 script = ExtResource("1_level")
 
-[node name="Background" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="." unique_id=1354019675]
 position = Vector2(960, 540)
 texture = ExtResource("2_bg")
 
-[node name="Grids" type="Node2D" parent="."]
+[node name="Grids" type="Node2D" parent="." unique_id=1181269354]
 
-[node name="Grid0" type="Polygon2D" parent="Grids"]
+[node name="Grid0" type="Polygon2D" parent="Grids" unique_id=342727026]
 position = Vector2(7.6691895, 11)
 scale = Vector2(1.0114069, 1)
 color = Color(0.2, 0.8, 1, 0)
 polygon = PackedVector2Array(284.0902, 420, 519.406, 412, 511.49622, 632, 506.5526, 763, 420.5338, 817, 271.23682, 831, 282.11276, 585)
 
-[node name="Grid1" type="Polygon2D" parent="Grids"]
+[node name="Grid1" type="Polygon2D" parent="Grids" unique_id=1741279887]
 position = Vector2(-121, -310.00003)
 scale = Vector2(1.1829787, 1.6160419)
 color = Color(1, 0.65, 0.2, 0)
 polygon = PackedVector2Array(729.51434, 450.48337, 840.2518, 449.86456, 933.23737, 462.85928, 938.3093, 554.44104, 842.7877, 560.01025, 728.669, 568.67334)
 
-[node name="Grid2" type="Polygon2D" parent="Grids"]
+[node name="Grid2" type="Polygon2D" parent="Grids" unique_id=955029927]
 position = Vector2(0, -12)
 color = Color(0.7, 1, 0.3, 0)
 polygon = PackedVector2Array(1130, 430, 1618, 430, 1620, 686, 1393, 677, 1365, 566, 1139, 570)
 
-[node name="Grid3" type="Polygon2D" parent="Grids"]
+[node name="Grid3" type="Polygon2D" parent="Grids" unique_id=511360509]
 position = Vector2(-11, -23)
 scale = Vector2(1, 1.0183486)
 color = Color(1, 0.4, 0.8, 0)
 polygon = PackedVector2Array(661, 742, 918.99994, 735.1262, 914.99994, 799.937, 1047, 804.8469, 1047, 746.91, 1184, 756.7298, 1218, 862.7839, 1325, 865.12616, 1549, 888.31537, 1525, 978.6578, 1304, 968.83795, 1258, 926.00903, 1193, 930.91895, 1122, 915.8109, 701.99994, 913.8469)
 
-[node name="StartMarker" type="Marker2D" parent="."]
+[node name="StartMarker" type="Marker2D" parent="." unique_id=1587191450]
 position = Vector2(350, 479)
 gizmo_extents = 40.0
 
-[node name="GoalMarker" type="Marker2D" parent="."]
+[node name="GoalMarker" type="Marker2D" parent="." unique_id=1061003247]
 position = Vector2(1567, 479)
 gizmo_extents = 40.0
 
-[node name="GameTimer" parent="." instance=ExtResource("3_timer")]
+[node name="GameTimer" parent="." unique_id=2123509796 instance=ExtResource("3_timer")]
 z_index = 60
 position = Vector2(58, 980)
 scale = Vector2(0.62, 0.62)
 
-[node name="green_light1" parent="." instance=ExtResource("4_light")]
+[node name="green_light1" parent="." unique_id=87874109 instance=ExtResource("4_light")]
 z_index = 55
 position = Vector2(356, 340)
 
-[node name="green_light2" parent="." instance=ExtResource("4_light")]
+[node name="green_light2" parent="." unique_id=2131258208 instance=ExtResource("4_light")]
 z_index = 55
 position = Vector2(416, 340)
 light_index = 2
 
-[node name="green_light3" parent="." instance=ExtResource("4_light")]
+[node name="green_light3" parent="." unique_id=1873949597 instance=ExtResource("4_light")]
 z_index = 55
 position = Vector2(476, 340)
 light_index = 3
 
-[node name="ReloadButton" parent="." instance=ExtResource("5_reload")]
+[node name="ReloadButton" parent="." unique_id=479060878 instance=ExtResource("5_reload")]
+z_index = 62
 position = Vector2(1780, 980)
 
-[node name="Gloeckler" parent="." instance=ExtResource("6_g")]
-position = Vector2(1780, 250)
+[node name="Gloeckler" parent="." unique_id=2087443551 instance=ExtResource("6_g")]
+position = Vector2(145, 610)
+
+[node name="Holes" type="Node2D" parent="."]
+
+[node name="Hole0" type="Marker2D" parent="Holes"]
+position = Vector2(115, 95)
+gizmo_extents = 30.0
+
+[node name="Hole1" type="Marker2D" parent="Holes"]
+position = Vector2(1030, 450)
+gizmo_extents = 30.0
+
+[node name="Hole2" type="Marker2D" parent="Holes"]
+position = Vector2(1400, 880)
+gizmo_extents = 30.0
