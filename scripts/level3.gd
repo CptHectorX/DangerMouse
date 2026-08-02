@@ -28,10 +28,14 @@ var _holes := []
 var board: Board
 
 var _dyn: Node2D
+var _labelbox: Node2D
 
 func _ready() -> void:
 	_dyn = Node2D.new()
 	add_child(_dyn)
+	_labelbox = Node2D.new()
+	_labelbox.z_index = 40
+	add_child(_labelbox)
 	board = Board.new()
 	board.entry = ENTRY
 	board.exit = EXIT
@@ -154,6 +158,7 @@ var active := "lever"
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_K:
 		$Grid.visible = not $Grid.visible
+		_update_labels()
 		return
 	if not (event is InputEventMouseButton and event.pressed):
 		return
@@ -254,6 +259,26 @@ func _remove(cell: Vector2i) -> void:
 
 func _center(cell: Vector2i) -> Vector2:
 	return ORIGIN + Vector2(cell.x * SLOT + SLOT / 2.0, cell.y * SLOT + SLOT / 2.0)
+
+func _update_labels() -> void:
+	for c in _labelbox.get_children():
+		c.free()
+	if not $Grid.visible:
+		return
+	for row in ROWS:
+		for col in COLS:
+			var cell := Vector2i(col, row)
+			if not _placeable(cell):
+				continue
+			var lbl := Label.new()
+			lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			lbl.text = "%d,%d" % [col, row]
+			lbl.add_theme_font_size_override("font_size", 13)
+			lbl.add_theme_color_override("font_color", Color(1, 1, 1))
+			lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+			lbl.add_theme_constant_override("outline_size", 5)
+			lbl.position = _center(cell) - Vector2(15, 9)
+			_labelbox.add_child(lbl)
 
 func _rebuild() -> void:
 	for child in _dyn.get_children():
