@@ -1,0 +1,31 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/grid_preview.gd" id="1_gp"]
+[ext_resource type="Texture2D" path="res://assets/bg_level2.png" id="2_bg"]
+
+[node name="Level2" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(960, 540)
+texture = ExtResource("2_bg")
+
+[node name="Grids" type="Node2D" parent="."]
+
+[node name="Grid0" type="Polygon2D" parent="Grids"]
+color = Color(0.2, 0.8, 1, 0.28)
+polygon = PackedVector2Array(295, 415, 555, 415, 555, 700, 295, 700)
+
+[node name="Grid1" type="Polygon2D" parent="Grids"]
+color = Color(1, 0.65, 0.2, 0.28)
+polygon = PackedVector2Array(720, 425, 1050, 425, 1050, 570, 720, 570)
+
+[node name="Grid2" type="Polygon2D" parent="Grids"]
+color = Color(0.7, 1, 0.3, 0.28)
+polygon = PackedVector2Array(1130, 430, 1510, 430, 1510, 720, 1130, 720)
+
+[node name="Grid3" type="Polygon2D" parent="Grids"]
+color = Color(1, 0.4, 0.8, 0.28)
+polygon = PackedVector2Array(640, 725, 1250, 725, 1250, 960, 640, 960)
+
+[node name="GridPreview" type="Node2D" parent="."]
+script = ExtResource("1_gp")
