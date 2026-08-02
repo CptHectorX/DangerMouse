@@ -40,6 +40,12 @@ func _ready() -> void:
 	_rocket = $Rocket
 	_rocket.visible = mode == "gameover" or mode == "win"
 	_rocket_x = _rocket.position.x
+	if mode == "start" or mode == "win":
+		Music.menu()
+	elif mode == "gameover":
+		Music.game_over()
+	elif mode == "transition":
+		Music.levels()
 	if mode == "start":
 		_toys = AssetConfig.JUNK + [AssetConfig.SWITCH, AssetConfig.LEVER, AssetConfig.GLOECKLER]
 		_add_bounds()

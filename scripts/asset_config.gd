@@ -17,9 +17,14 @@ const CABLE_CURVE := "res://assets/cable_curve.png"
 
 const GLOECKLER := "res://assets/gloeckler.png"
 const GLOECKLER_SOUNDS := "res://assets/sounds/gloeoecklerSounds"
-const LEVER_SOUND := "res://assets/sounds/lever_02.wav"
+const LEVER_SOUND := "res://assets/sounds/klick_lever.wav"
 const PLUG_IN_SOUND := "res://assets/sounds/plug_in.wav"
 const PLUG_OUT_SOUND := "res://assets/sounds/plug_out.wav"
+const TITLE_SOUND := "res://assets/sounds/titlescreen.wav"
+const GAMEPLAY_SOUND := "res://assets/sounds/gameplay.wav"
+const MAUSI_SOUND := "res://assets/sounds/mausi.wav"
+const SPARK_LOOP_SOUND := "res://assets/sounds/spark_loop.wav"
+const GAMEOVER_SOUND := "res://assets/sounds/gameover.wav"
 
 const JUNK := ["res://assets/screw.png", "res://assets/duck.png", "res://assets/screwduck.png", "res://assets/thing.png"]
 

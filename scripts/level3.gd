@@ -44,6 +44,7 @@ var _held_vel := Vector2.ZERO
 var inventory := {"lever": 0, "straight": 0, "curve": 0, "plug": 0}
 
 func _ready() -> void:
+	Music.levels()
 	_dyn = Node2D.new()
 	add_child(_dyn)
 	_labelbox = Node2D.new()

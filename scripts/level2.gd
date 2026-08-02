@@ -33,6 +33,7 @@ var _won := false
 var inventory := {"lever": 0, "straight": 0, "curve": 0, "plug": 0}
 
 func _ready() -> void:
+	Music.levels()
 	for g in $Grids.get_children():
 		if g is Polygon2D:
 			var pts := []
