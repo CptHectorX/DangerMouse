@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/GreenLight.tscn" id="4_light"]
 [ext_resource type="PackedScene" path="res://scenes/ReloadButton.tscn" id="5_reload"]
 [ext_resource type="PackedScene" path="res://scenes/Gloeckler.tscn" id="6_g"]
+[ext_resource type="Script" path="res://scripts/lamp.gd" id="7_lamp"]
 
 [node name="Level2" type="Node2D" unique_id=1457195807]
 script = ExtResource("1_level")
@@ -47,6 +48,11 @@ gizmo_extents = 40.0
 position = Vector2(1567, 479)
 gizmo_extents = 40.0
 
+[node name="Lamp" type="Node2D" parent="."]
+z_index = 58
+position = Vector2(1577, 330)
+script = ExtResource("7_lamp")
+
 [node name="GameTimer" parent="." unique_id=2123509796 instance=ExtResource("3_timer")]
 z_index = 60
 position = Vector2(58, 980)
@@ -73,16 +79,16 @@ position = Vector2(1780, 980)
 [node name="Gloeckler" parent="." unique_id=2087443551 instance=ExtResource("6_g")]
 position = Vector2(145, 610)
 
-[node name="Holes" type="Node2D" parent="."]
+[node name="Holes" type="Node2D" parent="." unique_id=1816116039]
 
-[node name="Hole0" type="Marker2D" parent="Holes"]
+[node name="Hole0" type="Marker2D" parent="Holes" unique_id=1927852716]
 position = Vector2(115, 95)
 gizmo_extents = 30.0
 
-[node name="Hole1" type="Marker2D" parent="Holes"]
-position = Vector2(1030, 450)
+[node name="Hole1" type="Marker2D" parent="Holes" unique_id=472108171]
+position = Vector2(1051, 448)
 gizmo_extents = 30.0
 
-[node name="Hole2" type="Marker2D" parent="Holes"]
-position = Vector2(1400, 880)
+[node name="Hole2" type="Marker2D" parent="Holes" unique_id=1061154391]
+position = Vector2(1619, 910)
 gizmo_extents = 30.0

@@ -7,7 +7,7 @@ const ROWS := 17
 const ENTRY := Vector2i(5, 7)
 const EXIT := Vector2i(24, 7)
 const START_PX := Vector2(250, 485)
-const GOAL_PX := Vector2(1660, 470)
+var GOAL_PX := Vector2(1577, 330)
 const RESERVE := {"lever": 2, "straight": 1, "curve": 1, "plug": 1}
 
 const LightningScript := preload("res://scripts/lightning.gd")
@@ -26,6 +26,8 @@ var _hintbox: Node2D
 var _grid_on := false
 var _pieces := []
 var _held = null
+var _lamp = null
+var _won := false
 
 var inventory := {"lever": 0, "straight": 0, "curve": 0, "plug": 0}
 
@@ -44,6 +46,8 @@ func _ready() -> void:
 	_hintbox = Node2D.new()
 	_hintbox.z_index = 25
 	add_child(_hintbox)
+	_lamp = $Lamp
+	GOAL_PX = _lamp.position
 	_add_bounds()
 	board = Board.new()
 	board.entry = ENTRY
@@ -428,10 +432,20 @@ func _rebuild() -> void:
 	for child in _dyn.get_children():
 		child.free()
 	var powered := board.powered_cells()
-	if powered.has(EXIT) and GameState.levels_done < 2:
-		GameState.levels_done = 2
+	var goal := powered.has(EXIT)
+	if _lamp != null:
+		_lamp.set_lit(goal)
+	if goal and not _won:
+		_won = true
+		if GameState.levels_done < 2:
+			GameState.levels_done = 2
+		_trigger_win()
 	_add_pieces(powered)
 	_add_lightning(powered)
+
+func _trigger_win() -> void:
+	await get_tree().create_timer(1.6).timeout
+	get_tree().change_scene_to_file("res://scenes/Level3.tscn")
 
 func _sprite(path: String, at: Vector2, live: bool, rot_deg := 0.0) -> void:
 	var s := Sprite2D.new()
