@@ -3,8 +3,8 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 32,
-    "updated": "2026-08-01",
+    "revision": 36,
+    "updated": "2026-08-02",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
   "acts": [
@@ -106,48 +106,48 @@
           "id": "dm-005",
           "title": "Stromfluss von Start zu Ziel",
           "phase": "tag1",
-          "status": "todo",
+          "status": "done",
           "tags": [
             "kern"
           ],
-          "notes": "Der Strom beginnt am festen Startknoten und haengelt sich ueber anliegende Hebel weiter. Jeden Frame neu von Start aus rechnen - dann braucht es kein eigenes Zuruecksetzen: faellt ein Hebel in Leerstellung, endet der Fluss eben dort. Ziel erreicht = Level geschafft.",
-          "date": "",
+          "notes": "Der Strom beginnt am festen Startknoten und haengelt sich ueber anliegende Hebel weiter. Jeden Frame neu von Start aus rechnen - dann braucht es kein eigenes Zuruecksetzen: faellt ein Hebel in Leerstellung, endet der Fluss eben dort. Ziel erreicht = Level geschafft.\n\n--- Umgesetzt 2026-08-02 (bitte testen) ---\nboard.gd powered_cells() flutet jedes Frame von Start ueber Nachbarn/Hebel/Links. Faellt ein Hebel in Leerstellung, endet der Fluss dort. Ziel bestromt = Level-Licht an. Laeuft in Level 1 und 3.",
+          "date": "2026-08-02",
           "num": 5
         },
         {
           "id": "dm-006",
           "title": "Steuerung: Hover waehlt, Tastatur handelt",
           "phase": "tag1",
-          "status": "todo",
+          "status": "done",
           "tags": [
             "kern"
           ],
-          "notes": "Maus-Hover markiert einen Hebel, WASD oder Pfeiltasten legen ihn in die jeweilige Richtung um. Kein Klick. Der Hebel wird als einzelnes Sprite um seinen Drehpunkt rotiert, Umlegen kurz getweent.",
-          "date": "",
+          "notes": "Maus-Hover markiert einen Hebel, WASD oder Pfeiltasten legen ihn in die jeweilige Richtung um. Kein Klick. Der Hebel wird als einzelnes Sprite um seinen Drehpunkt rotiert, Umlegen kurz getweent.\n\n--- Umgesetzt 2026-08-02 (bitte testen) ---\nSteuerung wurde Maus/Tray statt Hover/Tastatur: Tray links waehlt Werkzeug (Hebel/Kabel/Stecker), Linksklick setzen/entfernen, Rechtsklick drehen, K blendet das Raster ein/aus (in Level 3 zusaetzlich die Zell-Nummern). Nur neben Strom baubar.",
+          "date": "2026-08-02",
           "num": 6
         },
         {
           "id": "dm-007",
           "title": "Level 1: Sicherungskasten",
           "phase": "tag1",
-          "status": "todo",
+          "status": "done",
           "tags": [
             "level"
           ],
-          "notes": "Knoten, Hebel, Startpunkt und Zielpunkt von Hand im Bild platzieren. Erstes vollstaendiges Level - noch ohne Maeuse.",
-          "date": "",
+          "notes": "Knoten, Hebel, Startpunkt und Zielpunkt von Hand im Bild platzieren. Erstes vollstaendiges Level - noch ohne Maeuse.\n\n--- Umgesetzt 2026-08-02 (bitte testen) ---\nLevel 1 vollstaendig: Riss-Grid, feste Algorithmus-Schalter aus 10er-Pool (level1_layouts.gd), Kontaktknoten-Bruecke ueber den Riss, gruener Reload, 1 Maus, Timer + 3 Fortschritts-Lichter. Siehe cl-dm-25..28.",
+          "date": "2026-08-02",
           "num": 7
         },
         {
           "id": "dm-008",
           "title": "Timer 5:00.000",
           "phase": "tag1",
-          "status": "todo",
+          "status": "done",
           "tags": [
             "kern"
           ],
-          "notes": "Laeuft durchgehend rueckwaerts ueber alle drei Level, Anzeige Minuten:Sekunden.Millisekunden. Kein Anhalten zwischen den Leveln.",
-          "date": "",
+          "notes": "Laeuft durchgehend rueckwaerts ueber alle drei Level, Anzeige Minuten:Sekunden.Millisekunden. Kein Anhalten zwischen den Leveln.\n\n--- Umgesetzt 2026-08-02 (bitte testen) ---\ngame_timer.gd (7-Segment, gruen/orange/rot), eigener Knoten, laeuft durch, in Level 1 und 3 platziert. Siehe cl-dm-18.",
+          "date": "2026-08-02",
           "num": 8
         },
         {
@@ -158,7 +158,7 @@
           "tags": [
             "kern"
           ],
-          "notes": "Alle drei Level in der Zeit verkabelt: Rakete startet, gewonnen. Timer bei null: Rakete explodiert, verloren. Erst als schlichter Bildschirm, Animationen kommen spaeter.",
+          "notes": "Alle drei Level in der Zeit verkabelt: Rakete startet, gewonnen. Timer bei null: Rakete explodiert, verloren. Erst als schlichter Bildschirm, Animationen kommen spaeter.\n\n--- Stand 2026-08-02 ---\nSieg-Teil da: Ziel bestromt -> Level-Licht (GameState.levels_done), bei 3 blinken alle. Niederlage (Timer 0 -> Rakete explodiert) und der eigentliche Level-zu-Level-Flow (siehe dm-015) noch offen.",
           "date": "",
           "num": 9
         },
@@ -178,36 +178,36 @@
           "id": "dm-011",
           "title": "Spawnpunkte und Maeusepfade",
           "phase": "tag2",
-          "status": "todo",
+          "status": "done",
           "tags": [
             "maeuse"
           ],
-          "notes": "Beides von Hand als Marker gesetzt, nichts wird generiert. Mehrere Spawnpunkte, mehrere moegliche Pfade je Spawnpunkt.",
-          "date": "",
+          "notes": "Beides von Hand als Marker gesetzt, nichts wird generiert. Mehrere Spawnpunkte, mehrere moegliche Pfade je Spawnpunkt.\n\n--- Umgesetzt 2026-08-02 (bitte testen) ---\nLoecher als Marker (_holes = Position + Auftauch-Zelle). Maus taucht aus dem Loch auf. Level 1: 3 Loecher/1 Maus, Level 3: 3 Loecher/2 Maeuse.",
+          "date": "2026-08-02",
           "num": 11
         },
         {
           "id": "dm-012",
           "title": "Maeuse bewegen sich",
           "phase": "tag2",
-          "status": "todo",
+          "status": "done",
           "tags": [
             "maeuse"
           ],
-          "notes": "Beim Auftauchen werden Spawnpunkt und Pfad zufaellig gewaehlt - das ist die einzige Stelle, an der gewuerfelt wird. Das Tempo selbst bleibt vorhersehbar.",
-          "date": "",
+          "notes": "Beim Auftauchen werden Spawnpunkt und Pfad zufaellig gewaehlt - das ist die einzige Stelle, an der gewuerfelt wird. Das Tempo selbst bleibt vorhersehbar.\n\n--- Umgesetzt 2026-08-02 (bitte testen) ---\nmouse.gd: Zustaende HOLE/EMERGE/WANDER, zufaelliger Hop von Feld zu Feld, landed-Signal. Nur Loch und Pfad zufaellig, Tempo bleibt fest.",
+          "date": "2026-08-02",
           "num": 12
         },
         {
           "id": "dm-013",
           "title": "Maus trifft Strom",
           "phase": "tag2",
-          "status": "todo",
+          "status": "done",
           "tags": [
             "maeuse"
           ],
-          "notes": "Beruehrt eine Maus einen stromfuehrenden Abschnitt, wird sie elektrifiziert und explodiert. Der dortige Hebel faellt in Leerstellung - der Strom kommt dadurch nur noch bis zu diesem Knoten. Mehr passiert nicht: Maeuse blockieren das Schalten nicht.",
-          "date": "",
+          "notes": "Beruehrt eine Maus einen stromfuehrenden Abschnitt, wird sie elektrifiziert und explodiert. Der dortige Hebel faellt in Leerstellung - der Strom kommt dadurch nur noch bis zu diesem Knoten. Mehr passiert nicht: Maeuse blockieren das Schalten nicht.\n\n--- Umgesetzt 2026-08-02 (bitte testen) ---\nLandet eine Maus auf einer bestromten Zelle: Explosion, nur das getroffene Teil weg (Hebel -> Leerstellung + zurueck ins Inventar, feste Schalter bleiben), Maus zurueck ins Loch. Siehe cl-dm-27.",
+          "date": "2026-08-02",
           "num": 13
         },
         {
@@ -242,7 +242,7 @@
           "tags": [
             "level"
           ],
-          "notes": "Gleiches System, neues Bild und neue Knoten. Wenn hier Code noetig wird, stimmt am Aufbau etwas nicht.",
+          "notes": "Gleiches System, neues Bild und neue Knoten. Wenn hier Code noetig wird, stimmt am Aufbau etwas nicht.\n\n--- Stand 2026-08-02 ---\nWartet auf Julis Level-2-Assets (Background + Grid, kommen in art_master). System aus Level 1/3 ist wiederverwendbar: Szene duplizieren, Config (ORIGIN/Polygone/Loecher/Layouts) anpassen, Layouts mit einem gen-Tool erzeugen.",
           "date": "",
           "num": 16
         },
@@ -250,12 +250,12 @@
           "id": "dm-017",
           "title": "Level 3: Kontrollpult",
           "phase": "tag3",
-          "status": "todo",
+          "status": "done",
           "tags": [
             "level"
           ],
-          "notes": "Das schwerste Level. Gleiches System.",
-          "date": "",
+          "notes": "Das schwerste Level. Gleiches System.\n\n--- Umgesetzt 2026-08-02 (bitte testen) ---\nLevel 3 gebaut (Level3.tscn, level3.gd). Drei gekippte, teils L-foermige Panels als Polygon-Maske (achsen-parallel, ORIGIN 384,384 / 64px). Pfad A->C->B mit 2 Kontaktknoten-Spruengen ueber die Risse: A (oben-links) -> unter der CALLABUS-Karte herum durch C (unten) -> Sprung hoch ins obere B-Grid (Spalte jc zufaellig 10-13) -> Spieler baut runter zum Ziel (19,4) bei LAUNCH. Generator gen3.gd (3 Ketten + 2 Links, validiert via board.gd) -> 8 Layouts (level3_layouts.gd). 2 Maeuse aus 2 Loechern. 16 Zellen gesperrt, die in die Zeichnung ragen. Grid-Overlay aus meinen Zellen erzeugt -> Schalter deckungsgleich. Rechtes Panel (B) 20px tiefer (Alex-Wunsch). K blendet Raster + Zell-Nummern ein. Von Alex als 'perfekt' bestaetigt.",
+          "date": "2026-08-02",
           "num": 17
         },
         {
@@ -278,7 +278,7 @@
           "tags": [
             "politur"
           ],
-          "notes": "Kleine Animation fuer den Sieg, kurze Explosion fuer die Niederlage.",
+          "notes": "Kleine Animation fuer den Sieg, kurze Explosion fuer die Niederlage.\n\n--- Stand 2026-08-02 ---\nExplosion vorhanden (explosion.gd, bei Maus-Treffer). Raketenstart noch offen. Assets rocket.png + gloeckler.png liegen ungenutzt in art_master.",
           "date": "",
           "num": 19
         },
@@ -302,7 +302,7 @@
           "tags": [
             "politur"
           ],
-          "notes": "Platzhalter gleichnamig ueberschreiben. Wenn dabei Code angefasst werden muss, war die Vorarbeit aus Karte DM-003 nicht gruendlich genug.",
+          "notes": "Platzhalter gleichnamig ueberschreiben. Wenn dabei Code angefasst werden muss, war die Vorarbeit aus Karte DM-003 nicht gruendlich genug.\n\n--- Stand 2026-08-02 ---\nLevel-1- und Level-3-Assets eingebaut/skaliert (bg_level1/3 + grids). Level-3-Grid-Overlay selbst erzeugt (achsen-parallel zu meinem Raster), da Julis gemaltes Karo gekippt war und die Schalter nicht darauf sassen. Level 2 fehlt noch.",
           "date": "",
           "num": 21
         },
@@ -332,6 +332,34 @@
         }
       ],
       "changelog": [
+        {
+          "id": "cl-dm-32",
+          "title": "Level 3: Feinschliff (Sperr-Zellen, B-Route, Panel-Versatz)",
+          "body": "16 Zellen gesperrt, die in die Zeichnung ragen (CALLABUS-Karte + oberes B-Grid, inkl. 11,1). C-Kette laeuft jetzt unter der Karte herum. B-Kette bespielt das obere rechte Grid: Sprung nach (jc,0) mit jc zufaellig 10-13, dann baut der Spieler runter zum Ziel - je weiter links der Knoten, desto mehr bleibt rechts leer. Rechtes Panel (B) samt Schaltern 20px tiefer (Alex-Wunsch). K blendet Raster + Zell-Nummern ein.",
+          "rev": 36,
+          "date": "2026-08-02"
+        },
+        {
+          "id": "cl-dm-31",
+          "title": "Fixes Bau-Interaktion (Level 1 + 3)",
+          "body": "(1) Bauen auf einer selbst schon bestromten Zelle erlaubt - sonst konnte der per Link gespeiste Kontaktknoten keinen Hebel bekommen. (2) Hebel nur setzbar, wenn exakt 2 Felder weiter ein Schalter liegt, sonst muss ein Kabel/Stecker hin. (3) _remove-Crash behoben (kein switch-Key mehr nach festen Schaltern) und feste Schalter werden beim Entfernen nicht geloescht - nur der Hebel geht zurueck.",
+          "rev": 35,
+          "date": "2026-08-02"
+        },
+        {
+          "id": "cl-dm-30",
+          "title": "Level 3 (Kontrollpult) gebaut",
+          "body": "Neue Szene Level3.tscn + level3.gd. Drei gekippte, teils L-foermige Panels als Polygon-Maske (achsen-parallel, ORIGIN 384,384 / 64px), da Karo-Sampling durch die Kippung driftet. Pfad A->C->B mit 2 Kontaktknoten-Spruengen ueber die Risse. Generator gen3.gd (3 Ketten + 2 Links, self-validating via board.gd) -> 8 Layouts (level3_layouts.gd). 2 Maeuse aus 2 Loechern. Timer/3 Lichter/Reload/Tray platziert. Grid-Overlay aus meinen Zellen erzeugt -> Schalter deckungsgleich.",
+          "rev": 34,
+          "date": "2026-08-02"
+        },
+        {
+          "id": "cl-dm-29",
+          "title": "Level 1: Text raus, Grid per Default versteckt",
+          "body": "Oberer HUD-Text entfernt (nicht mehr gebraucht). Raster-Overlay startet versteckt, K blendet es ein/aus.",
+          "rev": 33,
+          "date": "2026-08-02"
+        },
         {
           "id": "cl-dm-28",
           "title": "10 Level-1-Layouts (generiert+validiert)",
@@ -549,6 +577,11 @@
           "id": "doc-trick-strom-kappen",
           "title": "Trick (GEWOLLT): Strom kappen = Denkpause",
           "body": "Dreht man ein Teil so, dass der Stromkreis **unterbrochen** wird, ist der Strom aus -> Maeuse koennen nichts mehr sprengen (sie explodieren **nur auf stromfuehrenden Feldern**). So kann man in Ruhe den naechsten Zug planen und danach wieder verbinden.\n\n**Das ist ein gewollter emergenter Trick und bleibt bewusst drin.** Nicht als Bug behandeln / nicht 'fixen'. (Alex + Juli finden's gut.)"
+        },
+        {
+          "id": "doc-level3",
+          "title": "Level 3 (Kontrollpult) - Technik & Wiedereinstieg",
+          "body": "Zweck: schneller Wiedereinstieg fuer eine neue Session.\n\nDateien: scenes/Level3.tscn, scripts/level3.gd, scripts/level3_layouts.gd (8 Layouts), scripts/tools/gen3.gd (Layout-Generator), scripts/tools/render3.gd (Kontroll-Render). Assets: assets/bg_level3.png (Julis Zeichnung), assets/bg_level3_grid.png (Grid-Overlay, von mir aus den Zellen erzeugt).\n\nRaster: ORIGIN (384,384), Zelle 64px, 20x11. Belegbare Zellen = Punkt-in-Polygon gegen POLYS (A oben-links, B-oben, B-Arm rechts, C unten) minus DISABLED (16 gesperrte Zellen ueber der Zeichnung). Schalter/Grid/Klick nutzen dasselbe Zell->Pixel-Mapping, darum deckungsgleich.\n\nPfad A->C->B: ENTRY (0,0). A-Kette -> Kontaktknoten unten -> Link zu (1,6) in C -> C-Kette unter der CALLABUS-Karte herum (runter Zeile 8/9, quer, hoch) endet bei (jc,6), jc zufaellig 10-13 -> Link senkrecht hoch zu (jc,0) im oberen B-Grid -> B-Kette oben nach rechts und runter Spalte 15/16 -> EXIT (19,4) bei LAUNCH. Kontaktknoten sind Grid-Rand-Schalter, NIE ein Schalter im Riss; die Links tragen den Strom per Bogen rueber.\n\nBesonderheiten: Rechtes Panel (B) samt Schaltern um 20px nach unten versetzt (B_SHIFT), inkl. angepasster Klick-Zuordnung. K blendet Grid + Zell-Nummern ein. 2 Maeuse. Renderer wie im Spiel: godot --path . --script res://scripts/tools/render3.gd (env IDX, OUT, SHOWGRID) auf echtem Display (headless malt leer). Layouts nachlegen: gen3.gd headless laufen lassen, Ausgabe in level3_layouts.gd."
         }
       ],
       "architecture": {
