@@ -191,7 +191,17 @@ func _rotate_placed(pos: Vector2) -> void:
 	var cell := _cell_at(pos)
 	if board.switches.has(cell) and board.switches[cell] != Board.NO_LEVER:
 		board.switches[cell] = (board.switches[cell] + 1) % 4
+		_play_lever_sound()
 		_rebuild()
+
+var _lever_sfx = null
+
+func _play_lever_sound() -> void:
+	if _lever_sfx == null:
+		_lever_sfx = AudioStreamPlayer.new()
+		_lever_sfx.stream = load(AssetConfig.LEVER_SOUND)
+		add_child(_lever_sfx)
+	_lever_sfx.play()
 
 func _pick(pos: Vector2) -> void:
 	var pk = _piece_at(pos)

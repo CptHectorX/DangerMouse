@@ -17,5 +17,6 @@ const CABLE_CURVE := "res://assets/cable_curve.png"
 
 const GLOECKLER := "res://assets/gloeckler.png"
 const GLOECKLER_SOUNDS := "res://assets/sounds/gloeoecklerSounds"
+const LEVER_SOUND := "res://assets/sounds/lever_02.wav"
 
 const LEVELS := [BG_LEVEL1, BG_LEVEL2, BG_LEVEL3]
