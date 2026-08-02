@@ -40,11 +40,33 @@ Godot-4-Spiel **DangerMouse** (Repo-Root, `project.godot`) **plus** das mitgebra
 Web-Werkzeug in `docs/`: das **Board** (Karten, Changelog, Doku, Architektur, Moodboard).
 Läuft online auf Cloudflare Pages, beide arbeiten parallel daran (siehe **Sync**).
 
-### Das Spiel — noch offen
-Das Spielkonzept steht bei Anlage dieser Datei **noch nicht fest** (der ursprünglich
-geplante Point-&-Click wurde verworfen). Dieser Abschnitt wird gefüllt, sobald das Konzept
-steht: Genre, Steuerung, Szenen-/Skript-Struktur, Asset-Pfade, Renderer. Bis dahin nichts
-über den Aufbau des Spiels annehmen — im Board nachsehen oder fragen.
+### Das Spiel
+**Genre:** Grid-Puzzle unter Zeitdruck. Der Spieler leitet **Strom von START
+(Sicherungskasten) zum ZIEL (Rakete)**, indem er auf einem **64px-Raster** feste
+Algorithmus-Schalter mit **Hebeln / Kabeln / Steckern** verbindet. **Mäuse** tauchen aus
+Löchern auf; berührt eine Maus einen bestromten Abschnitt, fliegt das getroffene Teil weg.
+Ein **Timer läuft 5:00 über drei Level** — alle drei rechtzeitig verkabelt = Rakete startet
+(Sieg), Timer bei null = Niederlage.
+
+- **Steuerung (Maus/Tray):** Tray-Werkzeug wählen (Hebel / Kabel| / Kabel L / Stecker),
+  **Linksklick** setzen/entfernen, **Rechtsklick** drehen, **K** blendet das Raster ein/aus.
+  Nur neben bestehendem Strom baubar. Grüner **Reload**-Kreispfeil lädt ein neues Layout
+  (Countdown läuft weiter).
+- **Schalter sind fest** (aus einem via `board.gd` validierten Layout-Pool), der Spieler
+  puzzelt nur die Verbinder. **Kontaktknoten + `board.links`** überbrücken Risse im Grid —
+  der Strom springt sichtbar per Lichtbogen rüber (nie ein Schalter im Riss).
+- **Struktur:** `project.godot` (Root). `scenes/`: `Level.tscn` (Level 1), `Level3.tscn`
+  (Level 3), dazu `GameTimer / GreenLight / ReloadButton` als wiederverwendbare Szenen.
+  `scripts/`: `board.gd` (Datenmodell + Stromfluss), `level.gd` / `level3.gd` (Level-Logik),
+  `mouse.gd`, `lightning.gd`, `explosion.gd`, `game_timer.gd`, `green_light.gd`,
+  `reload_button.gd`, `game_state.gd`, `level1_layouts.gd` / `level3_layouts.gd`,
+  `tools/gen.gd` · `gen3.gd` (Layout-Generatoren, headless) · `render3.gd` (Kontroll-Render).
+  `assets/`: `bg_level1/3` + Grids, Platzhalter-Sprites über `AssetConfig`.
+- **Rendern/Testen brauchen einen echten Display** (`DISPLAY=:0`), headless malt leer.
+  Godot-Binary aktuell `~/Downloads/Godot_v4.7.1-stable_linux.x86_64`.
+- **Stand:** Level 1 + Level 3 fertig, **Level 2 (Platine) offen** (wartet auf Julis Assets).
+  Genaues immer im **Board** (`docs/roadmap.json`: Karten, Changelog, Doku `doc-level3` /
+  `doc-spielkonzept`) — das ist die einzige Wahrheit über den Aufbau.
 
 - **Starten:** `bash run.sh` (findet `godot-4` via PATH/Snap, sonst ein Binary in
   `~/Downloads`); `--editor` öffnet im Editor. **Die Startskripte haben kein Ausführ-Recht**
