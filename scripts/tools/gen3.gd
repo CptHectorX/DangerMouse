@@ -132,11 +132,12 @@ func _gen_one():
 	if a == null: return null
 	var ca := Vector2i(1, 6)
 	var vr: int = [8, 9][randi() % 2]
-	var cb := Vector2i(9, 6)
+	var jc: int = [10, 11, 12, 13][randi() % 4]
+	var cb := Vector2i(jc, 6)
 	if not _pl(cb): return null
-	var c = _build_path([ca, Vector2i(1, vr), Vector2i(9, vr), cb], used)
+	var c = _build_path([ca, Vector2i(1, vr), Vector2i(jc, vr), cb], used)
 	if c == null: return null
-	var bc := Vector2i(9, 0)
+	var bc := Vector2i(jc, 0)
 	var rc: int = [15, 16][randi() % 2]
 	var ex := Vector2i(19, 4)
 	var b = _build_path([bc, Vector2i(rc, 0), Vector2i(rc, 4), ex], used)
