@@ -26,7 +26,7 @@ rotation = -0.10471976
 
 [node name="ReloadButton" parent="." unique_id=568606186 instance=ExtResource("6_reload")]
 z_index = 62
-position = Vector2(96, 986)
+position = Vector2(1846, 373)
 
 [node name="Gloeckler" parent="." unique_id=439695128 instance=ExtResource("7_g")]
 position = Vector2(1752, 967)

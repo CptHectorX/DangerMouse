@@ -39,8 +39,9 @@ z_index = 55
 position = Vector2(1712, 820)
 light_index = 3
 
-[node name="ReloadButton" parent="." instance=ExtResource("6_reload")]
-position = Vector2(1150, 1006)
+[node name="ReloadButton" parent="." unique_id=74202294 instance=ExtResource("6_reload")]
+z_index = 62
+position = Vector2(1620, 163)
 
-[node name="Gloeckler" parent="." instance=ExtResource("7_g")]
+[node name="Gloeckler" parent="." unique_id=202334424 instance=ExtResource("7_g")]
 position = Vector2(1780, 250)
