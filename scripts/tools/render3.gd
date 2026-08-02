@@ -41,6 +41,7 @@ func _process(_delta: float) -> bool:
 		var idx := int(OS.get_environment("IDX")) if OS.get_environment("IDX") != "" else 0
 		var lay = Level3Layouts.LAYOUTS[idx]
 		scn._load_layout(lay)
+		scn.get_node("Grid").visible = OS.get_environment("SHOWGRID") == "1"
 		var board = scn.board
 		var links := []
 		for lk in lay["links"]:
