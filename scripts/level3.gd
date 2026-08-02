@@ -180,9 +180,18 @@ func _unhandled_input(event: InputEvent) -> void:
 			_pick(event.position)
 		elif _held != null:
 			_release(event.position)
-	elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed and _held != null:
-		_held.set_rot(_held.rot + 1)
-		_update_hint()
+	elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+		if _held != null:
+			_held.set_rot(_held.rot + 1)
+			_update_hint()
+		else:
+			_rotate_placed(event.position)
+
+func _rotate_placed(pos: Vector2) -> void:
+	var cell := _cell_at(pos)
+	if board.switches.has(cell) and board.switches[cell] != Board.NO_LEVER:
+		board.switches[cell] = (board.switches[cell] + 1) % 4
+		_rebuild()
 
 func _pick(pos: Vector2) -> void:
 	var pk = _piece_at(pos)
