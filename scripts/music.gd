@@ -2,7 +2,7 @@ extends Node
 
 const CFG := {
 	"menu": [AssetConfig.TITLE_SOUND, -2.0, true],
-	"gameplay": [AssetConfig.GAMEPLAY_SOUND, -15.0, true],
+	"gameplay": [AssetConfig.GAMEPLAY_SOUND, -24.0, true],
 	"mausi": [AssetConfig.MAUSI_SOUND, -6.0, true],
 	"spark": [AssetConfig.SPARK_LOOP_SOUND, -9.0, true],
 	"gameover": [AssetConfig.GAMEOVER_SOUND, 0.0, false],

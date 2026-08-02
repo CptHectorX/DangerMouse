@@ -183,6 +183,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.keycode == KEY_SPACE and _held != null:
 			_held.set_rot(_held.rot + 1)
 			_update_hint()
+			_play_lever_sound()
 			return
 	if not (event is InputEventMouseButton):
 		return
@@ -200,6 +201,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if _held != null:
 			_held.set_rot(_held.rot + 1)
 			_update_hint()
+			_play_lever_sound()
 		else:
 			_rotate_placed(event.position)
 
