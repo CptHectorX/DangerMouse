@@ -1,31 +1,46 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://ctkc7m30lt0ny"]
 
-[ext_resource type="Script" path="res://scripts/grid_preview.gd" id="1_gp"]
-[ext_resource type="Texture2D" path="res://assets/bg_level2.png" id="2_bg"]
+[ext_resource type="Script" uid="uid://cyuctfbxi878d" path="res://scripts/grid_preview.gd" id="1_gp"]
+[ext_resource type="Texture2D" uid="uid://c7dhwej1c1nb4" path="res://assets/bg_level2.png" id="2_bg"]
 
-[node name="Level2" type="Node2D"]
+[node name="Level2" type="Node2D" unique_id=1365229777]
 
-[node name="Background" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="." unique_id=136913788]
 position = Vector2(960, 540)
 texture = ExtResource("2_bg")
 
-[node name="Grids" type="Node2D" parent="."]
+[node name="Grids" type="Node2D" parent="." unique_id=2077305939]
 
-[node name="Grid0" type="Polygon2D" parent="Grids"]
+[node name="Grid0" type="Polygon2D" parent="Grids" unique_id=1668555616]
+position = Vector2(7.6691895, 11)
+scale = Vector2(1.0114069, 1)
 color = Color(0.2, 0.8, 1, 0.28)
-polygon = PackedVector2Array(295, 415, 555, 415, 555, 700, 295, 700)
+polygon = PackedVector2Array(284.0902, 420, 519.406, 412, 511.49622, 632, 506.5526, 763, 420.5338, 817, 271.23682, 831, 282.11276, 585)
 
-[node name="Grid1" type="Polygon2D" parent="Grids"]
+[node name="Grid1" type="Polygon2D" parent="Grids" unique_id=1151304812]
+position = Vector2(-121, -310.00003)
+scale = Vector2(1.1829787, 1.6160419)
 color = Color(1, 0.65, 0.2, 0.28)
-polygon = PackedVector2Array(720, 425, 1050, 425, 1050, 570, 720, 570)
+polygon = PackedVector2Array(729.51434, 450.48337, 840.2518, 449.86456, 933.23737, 462.85928, 938.3093, 554.44104, 842.7877, 560.01025, 728.669, 568.67334)
 
-[node name="Grid2" type="Polygon2D" parent="Grids"]
+[node name="Grid2" type="Polygon2D" parent="Grids" unique_id=501232984]
+position = Vector2(0, -12)
 color = Color(0.7, 1, 0.3, 0.28)
-polygon = PackedVector2Array(1130, 430, 1510, 430, 1510, 720, 1130, 720)
+polygon = PackedVector2Array(1130, 430, 1618, 430, 1620, 686, 1393, 677, 1365, 566, 1139, 570)
 
-[node name="Grid3" type="Polygon2D" parent="Grids"]
+[node name="Grid3" type="Polygon2D" parent="Grids" unique_id=2044447885]
+position = Vector2(-11, -23)
+scale = Vector2(1, 1.0183486)
 color = Color(1, 0.4, 0.8, 0.28)
-polygon = PackedVector2Array(640, 725, 1250, 725, 1250, 960, 640, 960)
+polygon = PackedVector2Array(661, 742, 918.99994, 735.1262, 914.99994, 799.937, 1047, 804.8469, 1047, 746.91, 1184, 756.7298, 1218, 862.7839, 1325, 865.12616, 1549, 888.31537, 1525, 978.6578, 1304, 968.83795, 1258, 926.00903, 1193, 930.91895, 1122, 915.8109, 701.99994, 913.8469)
 
-[node name="GridPreview" type="Node2D" parent="."]
+[node name="GridPreview" type="Node2D" parent="." unique_id=1710885933]
 script = ExtResource("1_gp")
+
+[node name="StartMarker" type="Marker2D" parent="."]
+position = Vector2(330, 490)
+gizmo_extents = 40.0
+
+[node name="GoalMarker" type="Marker2D" parent="."]
+position = Vector2(1450, 500)
+gizmo_extents = 40.0
