@@ -49,11 +49,12 @@ func _ready() -> void:
 	board.entry = ENTRY
 	board.exit = EXIT
 	_holes = [
+		[Vector2(115, 95), Vector2i(6, 8)],
 		[Vector2(1030, 450), Vector2i(18, 8)],
 		[Vector2(1400, 880), Vector2i(20, 13)],
 	]
 	_spawn_mouse(_holes[0][0], _holes[0][1])
-	_spawn_mouse(_holes[1][0], _holes[1][1])
+	_spawn_mouse(_holes[2][0], _holes[2][1])
 	_load_random_layout()
 
 func _add_bounds() -> void:
@@ -272,8 +273,10 @@ func _inpoly(p: Vector2, poly: Array) -> bool:
 func _spawn_mouse(hole_pos: Vector2, emerge_cell: Vector2i) -> void:
 	var m = MouseScript.new()
 	m.g_origin = ORIGIN
-	m.g_cols = COLS
-	m.g_rows = ROWS
+	m.g_col_min = 4
+	m.g_cols = 26
+	m.g_row_min = 6
+	m.g_rows = 16
 	add_child(m)
 	m.landed.connect(_on_mouse_landed.bind(m))
 	m.spawn_in_hole(hole_pos, emerge_cell)

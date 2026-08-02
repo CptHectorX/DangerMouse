@@ -4,6 +4,8 @@ signal landed(hop_cell)
 
 const SLOT := 64
 var g_origin := Vector2(512, 220)
+var g_col_min := 0
+var g_row_min := 0
 var g_cols := 15
 var g_rows := 9
 const SIZE_PX := 96.0
@@ -87,7 +89,7 @@ func _start_hop() -> void:
 	var options := []
 	for d in [Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0)]:
 		var n: Vector2i = cell + d
-		if n.x >= 0 and n.x < g_cols and n.y >= 0 and n.y < g_rows:
+		if n.x >= g_col_min and n.x < g_cols and n.y >= g_row_min and n.y < g_rows:
 			options.append(n)
 	if options.is_empty():
 		return
