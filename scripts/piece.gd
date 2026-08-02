@@ -10,7 +10,8 @@ func setup(k: String, tex: String, slot: int) -> void:
 	var spr := Sprite2D.new()
 	spr.name = "Spr"
 	spr.texture = load(tex)
-	spr.scale = Vector2(float(slot) / 128.0, float(slot) / 128.0)
+	var tw: float = maxf(1.0, float(spr.texture.get_width()))
+	spr.scale = Vector2(float(slot) / tw, float(slot) / tw)
 	spr.z_index = 1
 	add_child(spr)
 	var col := CollisionShape2D.new()

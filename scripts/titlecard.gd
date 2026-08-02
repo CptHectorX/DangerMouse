@@ -2,8 +2,10 @@ extends Node2D
 
 const FireBoom := preload("res://scripts/fire_boom.gd")
 const Debris := preload("res://scripts/debris.gd")
+const PieceScript := preload("res://scripts/piece.gd")
 const START_SCENE := "res://scenes/Level.tscn"
 const CARD_SCENE := "res://scenes/TitleCard.tscn"
+const TOY := 128
 
 const W := 1920.0
 const CY := 660.0
@@ -23,6 +25,12 @@ var _rocket_x := ROCKET_X
 var _exploded := false
 var _done := false
 
+var _toys: Array = []
+var _pile: Array = []
+var _held = null
+var _held_vel := Vector2.ZERO
+var _rain_t := 0.0
+
 func _ready() -> void:
 	mode = card_mode
 	$Title.text = card_title
@@ -32,6 +40,11 @@ func _ready() -> void:
 	_rocket = $Rocket
 	_rocket.visible = mode == "gameover" or mode == "win"
 	_rocket_x = _rocket.position.x
+	if mode == "start":
+		_toys = AssetConfig.JUNK + [AssetConfig.SWITCH, AssetConfig.LEVER, AssetConfig.GLOECKLER]
+		_add_bounds()
+		for i in range(24):
+			_spawn_toy(randf_range(-1400.0, -60.0))
 
 func _fit_title() -> void:
 	var maxw := 1440.0
@@ -48,6 +61,7 @@ func _process(delta: float) -> void:
 	queue_redraw()
 	if mode == "start":
 		$Subtitle.modulate.a = 0.3 + 0.5 * (0.5 + 0.5 * sin(_t * 4.0))
+		_pile_process(delta)
 	if _phase == "sweep":
 		if _t >= SWEEP:
 			if mode == "start":
@@ -129,12 +143,83 @@ func _draw() -> void:
 	draw_circle(Vector2(head, CY), 22.0, Color(1.0, 0.9, 0.4, 0.4))
 	draw_circle(Vector2(head, CY), 10.0, Color(1.0, 1.0, 0.8, 1.0))
 
+func _add_bounds() -> void:
+	var body := StaticBody2D.new()
+	body.name = "Bounds"
+	_add_wall(body, Vector2(960, 1130), Vector2(2200, 120))
+	_add_wall(body, Vector2(-40, 540), Vector2(120, 1400))
+	_add_wall(body, Vector2(1960, 540), Vector2(120, 1400))
+	add_child(body)
+
+func _add_wall(body: StaticBody2D, pos: Vector2, size: Vector2) -> void:
+	var c := CollisionShape2D.new()
+	var s := RectangleShape2D.new()
+	s.size = size
+	c.shape = s
+	c.position = pos
+	body.add_child(c)
+
+func _spawn_toy(y: float) -> void:
+	var tex: String = _toys[randi() % _toys.size()]
+	var p := PieceScript.new()
+	p.setup("junk", tex, TOY)
+	p.position = Vector2(randf_range(150.0, 1770.0), y)
+	p.set_rot(randi() % 4)
+	p.drop(Vector2(randf_range(-60.0, 60.0), 0.0))
+	add_child(p)
+	p.z_index = -1
+	_pile.append(p)
+
+func _pile_process(delta: float) -> void:
+	if _held != null and is_instance_valid(_held):
+		var mp := get_global_mouse_position()
+		_held_vel = (mp - _held.position) / maxf(delta, 0.001)
+		_held.position = mp
+		_held.z_index = -1
+	_rain_t += delta
+	if _rain_t > 0.4:
+		_rain_t = 0.0
+		_spawn_toy(randf_range(-320.0, -120.0))
+		if _pile.size() > 64:
+			var old = _pile.pop_front()
+			if is_instance_valid(old):
+				old.queue_free()
+
+func _pick(pos: Vector2) -> void:
+	var best = null
+	var bd := 95.0
+	for p in _pile:
+		if is_instance_valid(p):
+			var d: float = p.position.distance_to(pos)
+			if d < bd:
+				bd = d
+				best = p
+	if best != null:
+		_pile.erase(best)
+		best.hold()
+		best.z_index = -1
+		_held = best
+
+func _release() -> void:
+	if _held == null:
+		return
+	var p = _held
+	_held = null
+	p.drop(_held_vel.limit_length(1800.0))
+	p.z_index = -1
+	_pile.append(p)
+
 func _unhandled_input(event: InputEvent) -> void:
 	if mode != "start":
 		return
 	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER or event.keycode == KEY_SPACE:
+		if event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER:
 			GameState.time_left = 300.0
 			GameState.levels_done = 0
 			GameState.next_scene = ""
 			_go(START_SCENE)
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			_pick(get_global_mouse_position())
+		else:
+			_release()
