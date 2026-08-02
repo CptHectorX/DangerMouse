@@ -20,11 +20,11 @@ const GLOECKLER_SOUNDS := "res://assets/sounds/gloeoecklerSounds"
 const LEVER_SOUND := "res://assets/sounds/klick_lever.wav"
 const PLUG_IN_SOUND := "res://assets/sounds/plug_in.wav"
 const PLUG_OUT_SOUND := "res://assets/sounds/plug_out.wav"
-const TITLE_SOUND := "res://assets/sounds/titlescreen.wav"
-const GAMEPLAY_SOUND := "res://assets/sounds/gameplay.wav"
-const MAUSI_SOUND := "res://assets/sounds/mausi.wav"
-const SPARK_LOOP_SOUND := "res://assets/sounds/spark_loop.wav"
-const GAMEOVER_SOUND := "res://assets/sounds/gameover.wav"
+const TITLE_SOUND := "res://assets/sounds/titlescreen.ogg"
+const GAMEPLAY_SOUND := "res://assets/sounds/gameplay.ogg"
+const MAUSI_SOUND := "res://assets/sounds/mausi.ogg"
+const SPARK_LOOP_SOUND := "res://assets/sounds/spark_loop.ogg"
+const GAMEOVER_SOUND := "res://assets/sounds/gameover.ogg"
 
 const JUNK := ["res://assets/screw.png", "res://assets/duck.png", "res://assets/screwduck.png", "res://assets/thing.png"]
 

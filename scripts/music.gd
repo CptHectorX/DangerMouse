@@ -15,12 +15,15 @@ func _ensure(name: String) -> AudioStreamPlayer:
 	if not _p.has(name):
 		var cfg: Array = CFG[name]
 		var s = load(cfg[0])
-		if cfg[2] and s is AudioStreamWAV:
-			s.loop_mode = AudioStreamWAV.LOOP_FORWARD
-			s.loop_begin = 0
-			var bps := 2 if s.format == AudioStreamWAV.FORMAT_16_BITS else 1
-			var ch := 2 if s.stereo else 1
-			s.loop_end = int(s.data.size() / (bps * ch))
+		if cfg[2]:
+			if s is AudioStreamOggVorbis:
+				s.loop = true
+			elif s is AudioStreamWAV:
+				s.loop_mode = AudioStreamWAV.LOOP_FORWARD
+				s.loop_begin = 0
+				var bps := 2 if s.format == AudioStreamWAV.FORMAT_16_BITS else 1
+				var ch := 2 if s.stereo else 1
+				s.loop_end = int(s.data.size() / (bps * ch))
 		var pl := AudioStreamPlayer.new()
 		pl.stream = s
 		pl.volume_db = cfg[1]
