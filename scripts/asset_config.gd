@@ -19,4 +19,6 @@ const GLOECKLER := "res://assets/gloeckler.png"
 const GLOECKLER_SOUNDS := "res://assets/sounds/gloeoecklerSounds"
 const LEVER_SOUND := "res://assets/sounds/lever_02.wav"
 
+const JUNK := ["res://assets/screw.png", "res://assets/duck.png", "res://assets/screwduck.png", "res://assets/thing.png"]
+
 const LEVELS := [BG_LEVEL1, BG_LEVEL2, BG_LEVEL3]

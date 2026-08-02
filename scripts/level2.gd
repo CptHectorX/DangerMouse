@@ -25,6 +25,7 @@ var _gridbox: Node2D
 var _hintbox: Node2D
 var _grid_on := false
 var _pieces := []
+var _junk := []
 var _held = null
 var _lamp = null
 var _won := false
@@ -125,6 +126,10 @@ func _spawn_pile() -> void:
 		if is_instance_valid(p):
 			p.queue_free()
 	_pieces.clear()
+	for j in _junk:
+		if is_instance_valid(j):
+			j.queue_free()
+	_junk.clear()
 	if _held != null and is_instance_valid(_held):
 		_held.queue_free()
 	_held = null
@@ -136,6 +141,18 @@ func _spawn_pile() -> void:
 			p.set_rot(randi() % 4)
 			p.drop(Vector2(randf_range(-30, 30), 0))
 			_pieces.append(p)
+	_spawn_junk()
+
+func _spawn_junk() -> void:
+	for tex in AssetConfig.JUNK:
+		for k in range(2 + randi() % 2):
+			var j = PieceScript.new()
+			j.setup("junk", tex, SLOT)
+			j.position = Vector2(randf_range(140, 1780), randf_range(-380, -40))
+			j.set_rot(randi() % 4)
+			j.drop(Vector2(randf_range(-30, 30), 0))
+			add_child(j)
+			_junk.append(j)
 
 func _make_piece(kind: String):
 	var p = PieceScript.new()
