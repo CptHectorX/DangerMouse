@@ -1,46 +1,32 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://i1j5lf1sse0q"]
 
-[ext_resource type="Script" path="res://scripts/level3.gd" id="1_level"]
-[ext_resource type="Texture2D" path="res://assets/bg_level3.png" id="2_bg"]
-[ext_resource type="Texture2D" path="res://assets/bg_level3_grid.png" id="3_grid"]
+[ext_resource type="Script" uid="uid://dha03q8k1msxe" path="res://scripts/level3.gd" id="1_level"]
+[ext_resource type="Texture2D" uid="uid://3o72c31pipkt" path="res://assets/bg_level3.png" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://bcnac6cij1yk2" path="res://assets/bg_level3_grid.png" id="3_grid"]
 [ext_resource type="PackedScene" path="res://scenes/GameTimer.tscn" id="4_timer"]
-[ext_resource type="PackedScene" path="res://scenes/GreenLight.tscn" id="5_light"]
 [ext_resource type="PackedScene" path="res://scenes/ReloadButton.tscn" id="6_reload"]
 [ext_resource type="PackedScene" path="res://scenes/Gloeckler.tscn" id="7_g"]
 
-[node name="Level3" type="Node2D"]
+[node name="Level3" type="Node2D" unique_id=1765255307]
 script = ExtResource("1_level")
 
-[node name="Background" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="." unique_id=38060113]
 position = Vector2(960, 540)
 texture = ExtResource("2_bg")
 
-[node name="Grid" type="Sprite2D" parent="."]
+[node name="Grid" type="Sprite2D" parent="." unique_id=303331560]
 visible = false
 position = Vector2(960, 540)
 texture = ExtResource("3_grid")
 
-[node name="GameTimer" parent="." instance=ExtResource("4_timer")]
+[node name="GameTimer" parent="." unique_id=113157190 instance=ExtResource("4_timer")]
 z_index = 60
-position = Vector2(300, 92)
-scale = Vector2(0.62, 0.62)
+position = Vector2(265.99997, 90)
+rotation = -0.10471976
 
-[node name="green_light1" parent="." instance=ExtResource("5_light")]
-z_index = 55
-position = Vector2(322, 214)
-
-[node name="green_light2" parent="." instance=ExtResource("5_light")]
-z_index = 55
-position = Vector2(374, 214)
-light_index = 2
-
-[node name="green_light3" parent="." instance=ExtResource("5_light")]
-z_index = 55
-position = Vector2(426, 214)
-light_index = 3
-
-[node name="ReloadButton" parent="." instance=ExtResource("6_reload")]
+[node name="ReloadButton" parent="." unique_id=568606186 instance=ExtResource("6_reload")]
+z_index = 62
 position = Vector2(96, 986)
 
-[node name="Gloeckler" parent="." instance=ExtResource("7_g")]
+[node name="Gloeckler" parent="." unique_id=439695128 instance=ExtResource("7_g")]
 position = Vector2(1800, 200)
