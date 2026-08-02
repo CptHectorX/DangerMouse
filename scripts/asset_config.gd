@@ -18,6 +18,8 @@ const CABLE_CURVE := "res://assets/cable_curve.png"
 const GLOECKLER := "res://assets/gloeckler.png"
 const GLOECKLER_SOUNDS := "res://assets/sounds/gloeoecklerSounds"
 const LEVER_SOUND := "res://assets/sounds/lever_02.wav"
+const PLUG_IN_SOUND := "res://assets/sounds/plug_in.wav"
+const PLUG_OUT_SOUND := "res://assets/sounds/plug_out.wav"
 
 const JUNK := ["res://assets/screw.png", "res://assets/duck.png", "res://assets/screwduck.png", "res://assets/thing.png"]
 

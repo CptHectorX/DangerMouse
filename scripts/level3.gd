@@ -210,6 +210,15 @@ func _rotate_placed(pos: Vector2) -> void:
 		_rebuild()
 
 var _lever_sfx = null
+var _sfx := {}
+
+func _play_sfx(path: String) -> void:
+	if not _sfx.has(path):
+		var pl := AudioStreamPlayer.new()
+		pl.stream = load(path)
+		add_child(pl)
+		_sfx[path] = pl
+	_sfx[path].play()
 
 func _play_lever_sound() -> void:
 	if _lever_sfx == null:
@@ -232,6 +241,8 @@ func _pick(pos: Vector2) -> void:
 		var kind := _type_kind(board.cables[cell]["type"])
 		var r: int = board.cables[cell]["rot"]
 		board.cables.erase(cell)
+		if kind == "plug":
+			_play_sfx(AssetConfig.PLUG_OUT_SOUND)
 		_rebuild()
 		_held = _make_piece(kind)
 		_held.set_rot(r)
@@ -268,6 +279,8 @@ func _release(pos: Vector2) -> void:
 			board.set_lever(cell, (p.rot + Board.Dir.RIGHT) % 4)
 		else:
 			board.place_cable(cell, _kind_type(p.kind), p.rot)
+			if p.kind == "plug":
+				_play_sfx(AssetConfig.PLUG_IN_SOUND)
 		p.queue_free()
 		_rebuild()
 		return
