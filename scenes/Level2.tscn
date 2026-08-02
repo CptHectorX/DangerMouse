@@ -37,10 +37,10 @@ polygon = PackedVector2Array(661, 742, 918.99994, 735.1262, 914.99994, 799.937, 
 [node name="GridPreview" type="Node2D" parent="." unique_id=1710885933]
 script = ExtResource("1_gp")
 
-[node name="StartMarker" type="Marker2D" parent="."]
-position = Vector2(330, 490)
+[node name="StartMarker" type="Marker2D" parent="." unique_id=1180445860]
+position = Vector2(350, 479)
 gizmo_extents = 40.0
 
-[node name="GoalMarker" type="Marker2D" parent="."]
-position = Vector2(1450, 500)
+[node name="GoalMarker" type="Marker2D" parent="." unique_id=454916036]
+position = Vector2(1567, 479)
 gizmo_extents = 40.0
