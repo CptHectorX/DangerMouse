@@ -15,6 +15,12 @@ const POLYS := [
 	[Vector2(1400, 560), Vector2(1664, 672), Vector2(1664, 860), Vector2(1330, 742)],
 	[Vector2(436, 758), Vector2(1200, 712), Vector2(1384, 1032), Vector2(428, 1012)],
 ]
+const DISABLED := [
+	Vector2i(6, 3), Vector2i(7, 3),
+	Vector2i(9, 1), Vector2i(10, 1), Vector2i(9, 2), Vector2i(10, 2), Vector2i(11, 2), Vector2i(12, 2),
+	Vector2i(7, 5), Vector2i(8, 5), Vector2i(9, 5),
+	Vector2i(5, 6), Vector2i(6, 6), Vector2i(7, 6), Vector2i(8, 6),
+]
 const RESERVE := {"lever": 2, "straight": 1, "curve": 1, "plug": 1}
 
 const TRAY := ["lever", "straight", "curve", "plug"]
@@ -77,6 +83,8 @@ func _load_layout(layout) -> void:
 
 func _placeable(cell: Vector2i) -> bool:
 	if cell.y < 0 or cell.y >= ROWS or cell.x < 0 or cell.x >= COLS:
+		return false
+	if DISABLED.has(cell):
 		return false
 	var p := _center(cell)
 	for poly in POLYS:

@@ -24,8 +24,17 @@ func _inpoly(p: Vector2, poly: Array) -> bool:
 		j = i
 	return ins
 
+const DISABLED := [
+	Vector2i(6, 3), Vector2i(7, 3),
+	Vector2i(9, 1), Vector2i(10, 1), Vector2i(9, 2), Vector2i(10, 2), Vector2i(11, 2), Vector2i(12, 2),
+	Vector2i(7, 5), Vector2i(8, 5), Vector2i(9, 5),
+	Vector2i(5, 6), Vector2i(6, 6), Vector2i(7, 6), Vector2i(8, 6),
+]
+
 func _pl(c: Vector2i) -> bool:
 	if c.x < 0 or c.x >= 20 or c.y < 0 or c.y >= 11:
+		return false
+	if DISABLED.has(c):
 		return false
 	var p := _center(c)
 	for name in POLYS:
@@ -71,23 +80,22 @@ func _run(chain: Array, types: Array, used: Dictionary, dir: int, length: int, l
 		pos = target
 	return ll
 
-func _build_chain(start: Vector2i, corner: Vector2i, target: Vector2i, used: Dictionary):
-	var chain := [start]
+func _build_path(waypoints: Array, used: Dictionary):
+	var chain := [waypoints[0]]
 	var types := []
-	used[start] = true
+	used[waypoints[0]] = true
 	var ll := false
-	if corner != start:
-		var d1 := _dir_of(corner - start)
-		var l1: int = abs((corner - start).x) + abs((corner - start).y)
-		var r1 = _run(chain, types, used, d1, l1, ll)
-		if r1 == null: return null
-		ll = r1
-	if target != corner:
-		var d2 := _dir_of(target - corner)
-		var l2: int = abs((target - corner).x) + abs((target - corner).y)
-		var r2 = _run(chain, types, used, d2, l2, ll)
-		if r2 == null: return null
-	if chain[chain.size() - 1] != target: return null
+	for i in range(1, waypoints.size()):
+		var frm: Vector2i = chain[chain.size() - 1]
+		var to: Vector2i = waypoints[i]
+		if to == frm:
+			continue
+		var d := _dir_of(to - frm)
+		var l: int = abs((to - frm).x) + abs((to - frm).y)
+		var r = _run(chain, types, used, d, l, ll)
+		if r == null: return null
+		ll = r
+		if chain[chain.size() - 1] != to: return null
 	return {"chain": chain, "types": types}
 
 func _solve(board, chain, types):
@@ -117,19 +125,21 @@ func _count(res, chain, types):
 
 func _gen_one():
 	var used := {}
-	var a3: int = [0, 2, 4, 6][randi() % 4]
+	var a3: int = [0, 2, 4][randi() % 3]
 	var ac := Vector2i(a3, 3)
 	if not _pl(ac): return null
-	var a = _build_chain(Vector2i(0, 0), Vector2i(0, 3), ac, used)
+	var a = _build_path([Vector2i(0, 0), Vector2i(0, 3), ac], used)
 	if a == null: return null
 	var ca := Vector2i(1, 6)
-	var cb := Vector2i([11, 12, 13][randi() % 3], 6)
+	var vr: int = [8, 9][randi() % 2]
+	var cb_col: int = [11, 12, 13][randi() % 3]
+	var cb := Vector2i(cb_col, 6)
 	if not _pl(cb): return null
-	var c = _build_chain(ca, ca, cb, used)
+	var c = _build_path([ca, Vector2i(1, vr), Vector2i(cb_col, vr), cb], used)
 	if c == null: return null
 	var bc := Vector2i(17, 4)
 	var ex := Vector2i(19, 4)
-	var b = _build_chain(bc, bc, ex, used)
+	var b = _build_path([bc, ex], used)
 	if b == null: return null
 	var switches: Array = a["chain"] + c["chain"] + b["chain"]
 	var board := Board.new()
