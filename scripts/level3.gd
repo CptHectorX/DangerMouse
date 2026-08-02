@@ -439,14 +439,26 @@ func _update_labels() -> void:
 			lbl.position = _center(cell) - Vector2(15, 9)
 			_labelbox.add_child(lbl)
 
+var _won := false
+
 func _rebuild() -> void:
 	for child in _dyn.get_children():
 		child.free()
 	var powered := board.powered_cells()
-	if powered.has(EXIT) and GameState.levels_done < 3:
-		GameState.levels_done = 3
+	if powered.has(EXIT) and not _won:
+		_won = true
+		if GameState.levels_done < 3:
+			GameState.levels_done = 3
+		_trigger_win()
 	_add_pieces(powered)
 	_add_lightning(powered)
+
+func _trigger_win() -> void:
+	await get_tree().create_timer(1.0).timeout
+	GameState.card_mode = "win"
+	GameState.card_title = "** CONGRATULATIONS !! **"
+	GameState.card_sub = ""
+	get_tree().change_scene_to_file("res://scenes/TitleCard.tscn")
 
 func _sprite(path: String, at: Vector2, live: bool, rot_deg := 0.0) -> void:
 	var s := Sprite2D.new()

@@ -24,6 +24,7 @@ const INTRO := 1.6
 
 var t := TOTAL
 var _intro := 0.0
+var _over := false
 
 func _ready() -> void:
 	add_to_group("timer")
@@ -47,6 +48,13 @@ func _process(delta: float) -> void:
 	if t > 0.0:
 		t = maxf(0.0, t - delta)
 	GameState.time_left = t
+	if t <= 0.0 and not _over:
+		_over = true
+		GameState.card_mode = "gameover"
+		GameState.card_title = "GAME OVER"
+		GameState.card_sub = ""
+		get_tree().change_scene_to_file("res://scenes/TitleCard.tscn")
+		return
 	queue_redraw()
 
 func _digit_x(i: int) -> float:

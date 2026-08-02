@@ -375,14 +375,27 @@ func _clear_hint() -> void:
 	for c in _hintbox.get_children():
 		c.free()
 
+var _won := false
+
 func _rebuild() -> void:
 	for child in _dyn.get_children():
 		child.free()
 	var powered := board.powered_cells()
-	if powered.has(EXIT) and GameState.levels_done < 1:
-		GameState.levels_done = 1
+	if powered.has(EXIT) and not _won:
+		_won = true
+		if GameState.levels_done < 1:
+			GameState.levels_done = 1
+		_trigger_win()
 	_add_pieces(powered)
 	_add_lightning(powered)
+
+func _trigger_win() -> void:
+	await get_tree().create_timer(1.0).timeout
+	GameState.card_mode = "transition"
+	GameState.card_title = "Dangermouse"
+	GameState.card_sub = ""
+	GameState.next_scene = "res://scenes/Level2.tscn"
+	get_tree().change_scene_to_file("res://scenes/TitleCard.tscn")
 
 func _sprite(path: String, at: Vector2, live: bool, rot_deg := 0.0) -> void:
 	var s := Sprite2D.new()
