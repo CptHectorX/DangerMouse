@@ -15,4 +15,7 @@ const CABLE_PLUG := "res://assets/cable_plug.png"
 const CABLE_STRAIGHT := "res://assets/cable_straight.png"
 const CABLE_CURVE := "res://assets/cable_curve.png"
 
+const GLOECKLER := "res://assets/gloeckler.png"
+const GLOECKLER_SOUNDS := "res://art_master/sounds/gloeoecklerSounds"
+
 const LEVELS := [BG_LEVEL1, BG_LEVEL2, BG_LEVEL3]

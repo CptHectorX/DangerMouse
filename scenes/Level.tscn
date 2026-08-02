@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/GameTimer.tscn" id="4_timer"]
 [ext_resource type="PackedScene" path="res://scenes/GreenLight.tscn" id="5_light"]
 [ext_resource type="PackedScene" path="res://scenes/ReloadButton.tscn" id="6_reload"]
+[ext_resource type="PackedScene" path="res://scenes/Gloeckler.tscn" id="7_g"]
 
 [node name="Level" type="Node2D" unique_id=1592056667]
 script = ExtResource("1_level")
@@ -40,3 +41,6 @@ light_index = 3
 
 [node name="ReloadButton" parent="." instance=ExtResource("6_reload")]
 position = Vector2(1150, 1006)
+
+[node name="Gloeckler" parent="." instance=ExtResource("7_g")]
+position = Vector2(1780, 250)
