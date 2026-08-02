@@ -9,6 +9,7 @@ script = ExtResource("1_t")
 
 [node name="Black" type="ColorRect" parent="."]
 z_index = -1
+mouse_filter = 2
 offset_right = 1920.0
 offset_bottom = 1080.0
 color = Color(0, 0, 0, 1)
@@ -21,6 +22,7 @@ texture = ExtResource("3_rocket")
 
 [node name="Title" type="Label" parent="."]
 z_index = 1
+mouse_filter = 2
 offset_left = 240.0
 offset_top = 60.0
 offset_right = 1680.0
@@ -36,6 +38,7 @@ vertical_alignment = 1
 
 [node name="Subtitle" type="Label" parent="."]
 z_index = 1
+mouse_filter = 2
 offset_left = 240.0
 offset_top = 410.0
 offset_right = 1680.0
