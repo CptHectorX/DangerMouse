@@ -20,11 +20,17 @@ const DIGITS := [
 	[true, true, true, true, false, true, true],
 ]
 
+const INTRO := 1.6
+
 var t := TOTAL
+var _intro := 0.0
 
 func _ready() -> void:
 	add_to_group("timer")
 	z_index = 60
+	if not Engine.is_editor_hint():
+		t = GameState.time_left
+		_intro = INTRO
 	queue_redraw()
 
 func current_color() -> Color:
@@ -33,8 +39,14 @@ func current_color() -> Color:
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		return
+	if _intro > 0.0:
+		_intro -= delta
+		visible = (int((INTRO - _intro) / 0.26) % 2) == 0
+		return
+	visible = true
 	if t > 0.0:
 		t = maxf(0.0, t - delta)
+	GameState.time_left = t
 	queue_redraw()
 
 func _digit_x(i: int) -> float:
