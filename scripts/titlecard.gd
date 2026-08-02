@@ -47,10 +47,30 @@ func _ready() -> void:
 	elif mode == "transition":
 		Music.levels()
 	if mode == "start":
+		_add_credits_button()
 		_toys = AssetConfig.JUNK + [AssetConfig.SWITCH, AssetConfig.LEVER, AssetConfig.GLOECKLER]
 		_add_bounds()
 		for i in range(24):
 			_spawn_toy(randf_range(-1400.0, -60.0))
+
+func _add_credits_button() -> void:
+	var b := Button.new()
+	b.text = "credits"
+	b.flat = true
+	b.focus_mode = Control.FOCUS_NONE
+	b.z_index = 8
+	b.add_theme_font_override("font", load("res://assets/fonts/PressStart2P.ttf"))
+	b.add_theme_font_size_override("font_size", 30)
+	b.add_theme_color_override("font_color", Color(1, 0.85, 0.1))
+	b.add_theme_color_override("font_hover_color", Color(1, 1, 1))
+	b.add_theme_color_override("font_pressed_color", Color(1, 1, 1))
+	b.position = Vector2(40, 1000)
+	b.size = Vector2(320, 60)
+	b.pressed.connect(_open_credits)
+	add_child(b)
+
+func _open_credits() -> void:
+	_go("res://scenes/Credits.tscn")
 
 func _fit_title() -> void:
 	var maxw := 1440.0

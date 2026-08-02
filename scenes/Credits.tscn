@@ -1,0 +1,57 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/credits.gd" id="1_c"]
+[ext_resource type="FontFile" path="res://assets/fonts/PressStart2P.ttf" id="2_font"]
+
+[node name="Credits" type="Node2D"]
+script = ExtResource("1_c")
+
+[node name="Black" type="ColorRect" parent="."]
+z_index = -1
+mouse_filter = 2
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0, 0, 0, 1)
+
+[node name="Line1" type="Label" parent="."]
+mouse_filter = 2
+offset_left = 60.0
+offset_top = 440.0
+offset_right = 1860.0
+offset_bottom = 520.0
+theme_override_colors/font_color = Color(1, 0.85, 0.1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 30
+text = "created by Juliane Wurzel & Alexander Schmack"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Line2" type="Label" parent="."]
+mouse_filter = 2
+offset_left = 60.0
+offset_top = 560.0
+offset_right = 1860.0
+offset_bottom = 630.0
+theme_override_colors/font_color = Color(1, 0.85, 0.1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 26
+text = "Sounds & Music by Epidemicsound.com"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Hint" type="Label" parent="."]
+mouse_filter = 2
+offset_left = 60.0
+offset_top = 980.0
+offset_right = 1860.0
+offset_bottom = 1030.0
+theme_override_colors/font_color = Color(0.5, 0.5, 0.5, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+text = "click to return"
+horizontal_alignment = 1
+vertical_alignment = 1
