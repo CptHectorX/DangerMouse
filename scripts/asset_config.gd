@@ -25,6 +25,9 @@ const GAMEPLAY_SOUND := "res://assets/sounds/gameplay.ogg"
 const MAUSI_SOUND := "res://assets/sounds/mausi.ogg"
 const SPARK_LOOP_SOUND := "res://assets/sounds/spark_loop.ogg"
 const GAMEOVER_SOUND := "res://assets/sounds/gameover.ogg"
+const MOUSE_EXPLOSION_SOUND := "res://assets/sounds/mouseExplosion.wav"
+const BIG_BOOM_SOUND := "res://assets/sounds/bigBoom.wav"
+const ROCKET_START_SOUND := "res://assets/sounds/rocketStart.ogg"
 
 const JUNK := ["res://assets/screw.png", "res://assets/duck.png", "res://assets/screwduck.png", "res://assets/thing.png"]
 

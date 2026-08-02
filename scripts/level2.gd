@@ -375,6 +375,7 @@ func _explode_at(cell: Vector2i, m: Node) -> void:
 	var boom = ExplosionScript.new()
 	boom.position = _center(cell)
 	add_child(boom)
+	_play_sfx(AssetConfig.MOUSE_EXPLOSION_SOUND)
 	var hole = _holes[randi() % _holes.size()]
 	m.spawn_in_hole(hole[0], hole[1])
 

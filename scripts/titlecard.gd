@@ -84,6 +84,8 @@ func _end_sweep() -> void:
 	else:
 		_phase = "rocket"
 		_rt = 0.0
+		if mode == "win":
+			_oneshot(AssetConfig.ROCKET_START_SOUND)
 
 func _rocket_phase(delta: float) -> void:
 	if mode == "win":
@@ -101,9 +103,17 @@ func _rocket_phase(delta: float) -> void:
 		elif _rt > 2.8:
 			_back_to_start()
 
+func _oneshot(path: String) -> void:
+	var pl := AudioStreamPlayer.new()
+	pl.stream = load(path)
+	add_child(pl)
+	pl.play()
+	pl.finished.connect(pl.queue_free)
+
 func _explode() -> void:
 	var at: Vector2 = _rocket.position
 	_rocket.visible = false
+	_oneshot(AssetConfig.BIG_BOOM_SOUND)
 	var boom = Boom.new()
 	boom.position = at
 	boom.setup(Color(1.0, 0.55, 0.2), 5.5)
