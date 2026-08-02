@@ -38,8 +38,8 @@ var _dyn: Node2D
 var _labelbox: Node2D
 var _hintbox: Node2D
 var _pieces := []
-var _junk := []
 var _held = null
+var _held_vel := Vector2.ZERO
 
 var inventory := {"lever": 0, "straight": 0, "curve": 0, "plug": 0}
 
@@ -116,10 +116,6 @@ func _spawn_pile() -> void:
 		if is_instance_valid(p):
 			p.queue_free()
 	_pieces.clear()
-	for j in _junk:
-		if is_instance_valid(j):
-			j.queue_free()
-	_junk.clear()
 	if _held != null and is_instance_valid(_held):
 		_held.queue_free()
 	_held = null
@@ -142,7 +138,7 @@ func _spawn_junk() -> void:
 			j.set_rot(randi() % 4)
 			j.drop(Vector2(randf_range(-30, 30), 0))
 			add_child(j)
-			_junk.append(j)
+			_pieces.append(j)
 
 func _make_piece(kind: String):
 	var p = PieceScript.new()
@@ -170,9 +166,11 @@ func _type_kind(t: int) -> String:
 		Board.Cable.PLUG: return "plug"
 	return "straight"
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if _held != null and is_instance_valid(_held):
-		_held.position = get_global_mouse_position()
+		var mp := get_global_mouse_position()
+		_held_vel = (mp - _held.position) / maxf(delta, 0.001)
+		_held.position = mp
 		_update_hint()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -273,10 +271,12 @@ func _release(pos: Vector2) -> void:
 		p.queue_free()
 		_rebuild()
 		return
-	p.drop(Vector2(randf_range(-40, 40), -20))
+	p.drop(_held_vel.limit_length(1600))
 	_pieces.append(p)
 
 func _snap_ok(p, cell: Vector2i) -> bool:
+	if p.kind == "junk":
+		return false
 	if not _placeable(cell):
 		return false
 	if p.kind == "lever":
