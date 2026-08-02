@@ -3,7 +3,7 @@
     "project": "DangerMouse",
     "subtitle": "Game Jam Augsburg",
     "repo": "github.com/CptHectorX/DangerMouse",
-    "revision": 36,
+    "revision": 37,
     "updated": "2026-08-02",
     "note": "Board fuer den Game Jam. Einzige Wahrheit fuer roadmap.html. Speichern online via /api/save."
   },
@@ -333,6 +333,13 @@
       ],
       "changelog": [
         {
+          "id": "cl-dm-33",
+          "title": "Level-Grids visuell per Polygon definieren (Werkzeug)",
+          "body": "Neues Werkzeug fuer Level-Grids: editierbare Polygon2D-Flaechen pro Feld + @tool-Live-Raster (grid_preview.gd) zeigt die 64px-Zellen im Polygon, plus ziehbare Start-/Ziel-Marker. Alex zieht die Grenzen visuell im Editor, Claude liest sie aus und baut Placeable/Pfad/Layouts. Ersetzt das fehleranfaellige Pixel-Messen aus Level 3. Erstmals fuer Level 2 (Amiga-Platine, Julis Production-Art). Siehe Doku doc-grid-polygon-workflow.",
+          "rev": 37,
+          "date": "2026-08-02"
+        },
+        {
           "id": "cl-dm-32",
           "title": "Level 3: Feinschliff (Sperr-Zellen, B-Route, Panel-Versatz)",
           "body": "16 Zellen gesperrt, die in die Zeichnung ragen (CALLABUS-Karte + oberes B-Grid, inkl. 11,1). C-Kette laeuft jetzt unter der Karte herum. B-Kette bespielt das obere rechte Grid: Sprung nach (jc,0) mit jc zufaellig 10-13, dann baut der Spieler runter zum Ziel - je weiter links der Knoten, desto mehr bleibt rechts leer. Rechtes Panel (B) samt Schaltern 20px tiefer (Alex-Wunsch). K blendet Raster + Zell-Nummern ein.",
@@ -582,6 +589,11 @@
           "id": "doc-level3",
           "title": "Level 3 (Kontrollpult) - Technik & Wiedereinstieg",
           "body": "Zweck: schneller Wiedereinstieg fuer eine neue Session.\n\nDateien: scenes/Level3.tscn, scripts/level3.gd, scripts/level3_layouts.gd (8 Layouts), scripts/tools/gen3.gd (Layout-Generator), scripts/tools/render3.gd (Kontroll-Render). Assets: assets/bg_level3.png (Julis Zeichnung), assets/bg_level3_grid.png (Grid-Overlay, von mir aus den Zellen erzeugt).\n\nRaster: ORIGIN (384,384), Zelle 64px, 20x11. Belegbare Zellen = Punkt-in-Polygon gegen POLYS (A oben-links, B-oben, B-Arm rechts, C unten) minus DISABLED (16 gesperrte Zellen ueber der Zeichnung). Schalter/Grid/Klick nutzen dasselbe Zell->Pixel-Mapping, darum deckungsgleich.\n\nPfad A->C->B: ENTRY (0,0). A-Kette -> Kontaktknoten unten -> Link zu (1,6) in C -> C-Kette unter der CALLABUS-Karte herum (runter Zeile 8/9, quer, hoch) endet bei (jc,6), jc zufaellig 10-13 -> Link senkrecht hoch zu (jc,0) im oberen B-Grid -> B-Kette oben nach rechts und runter Spalte 15/16 -> EXIT (19,4) bei LAUNCH. Kontaktknoten sind Grid-Rand-Schalter, NIE ein Schalter im Riss; die Links tragen den Strom per Bogen rueber.\n\nBesonderheiten: Rechtes Panel (B) samt Schaltern um 20px nach unten versetzt (B_SHIFT), inkl. angepasster Klick-Zuordnung. K blendet Grid + Zell-Nummern ein. 2 Maeuse. Renderer wie im Spiel: godot --path . --script res://scripts/tools/render3.gd (env IDX, OUT, SHOWGRID) auf echtem Display (headless malt leer). Layouts nachlegen: gen3.gd headless laufen lassen, Ausgabe in level3_layouts.gd."
+        },
+        {
+          "id": "doc-grid-polygon-workflow",
+          "title": "Level-Grids visuell definieren (editierbare Polygone + Live-Raster)",
+          "body": "Idee (2026-08-02, ab Level 2). Problem bei Level 3: die belegbaren Grid-Felder wurden per Pixel-Messung aus dem Hintergrund geraten (Connected-Components, Polygone im Code) - fehleranfaellig und zeitraubend, v.a. weil das Karo gekippt war.\n\nLoesung: Die Grid-Felder werden direkt im Godot-Editor als editierbare **Polygon2D-Flaechen** definiert (1 pro Feld, eingefaerbt) - wie Walk-Areas in Point&Click-Adventures. Ein @tool-Skript `grid_preview.gd` zeichnet LIVE die 64x64-Zellen, deren Mitte in einem Polygon liegt (cyan); zieht Alex eine Polygon-Ecke, aktualisiert sich das Raster sofort. Dazu zwei ziehbare `Marker2D` (StartMarker/GoalMarker), die ihre Rasterzelle gruen/rot markieren = Start-/Zielschalter.\n\nArbeitsteilung: Alex zieht die Grenzen sauber (er sieht Julis Zeichnung), Claude liest die Polygon-Punkte + Marker-Zellen aus `scenes/Level2.tscn` (global via to_global) und baut daraus `_placeable`, den Pfad und die Layouts. Szene: Node `Grids` mit `Grid0..Grid3` (Polygon2D) + `GridPreview` + `StartMarker`/`GoalMarker`. Deutlich schneller und praeziser als das Pixel-Messen. Als Muster fuer alle kuenftigen Level nutzen."
         }
       ],
       "architecture": {
